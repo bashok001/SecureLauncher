@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ ======================================================================*
+  ~ Copyright (c) 2014 SecureLauncher Group
+  ~              All rights reserved.
+  ~ ======================================================================*
+  ~ NOTICE: Not for use or disclosure outside of SecureLauncher Group
+  ~                 without written permission.
+  ~ ======================================================================*
+  ~ 	@author Ashok Bommisetti
+  ~ 	@version 1.0
+  ~
+  ~ File: /android/androidLauncherWS/SecureLauncher/app/src/main/res/values/colors.xml
+  ~
+  ~ Summary of Changes:
+  ~ "Date of Change"	"Developer's Name"	"Changes"
+  ~ 7/6/2014			Ashok Bommisetti	Initial Version
+  -->
+
 <resources>
     <color name="seclaunch_default_color">#3eadeb</color>
     <color name="seclaunch_default_shadow_color">#ff3493c8</color>

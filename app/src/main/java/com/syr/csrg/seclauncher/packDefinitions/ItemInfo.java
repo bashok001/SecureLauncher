@@ -28,7 +28,7 @@ import java.io.IOException;
 /**
  * Represents an item in the launcher.
  */
-class ItemInfo {
+public class ItemInfo {
     public static final String CLASSNAME = "ItemInfo";
 
     static final int NO_ID = -1;
@@ -76,17 +76,65 @@ class ItemInfo {
      */
     CharSequence title;
 
-    ItemInfo() {
+    public long getId() {
+        return id;
     }
 
-    ItemInfo(ItemInfo info) {
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
+    public long getContainer() {
+        return container;
+    }
+
+    public void setContainer(long container) {
+        this.container = container;
+    }
+
+    public int getSpanX() {
+        return spanX;
+    }
+
+    public void setSpanX(int spanX) {
+        this.spanX = spanX;
+    }
+
+    public int getSpanY() {
+        return spanY;
+    }
+
+    public void setSpanY(int spanY) {
+        this.spanY = spanY;
+    }
+
+    public CharSequence getTitle() {
+        return title;
+    }
+
+    public void setTitle(CharSequence title) {
+        this.title = title;
+    }
+
+    /*ItemInfo() {
+        }
+    */
+  /*  public ItemInfo(ItemInfo info) {
         id = info.id;
         spanX = info.spanX;
         spanY = info.spanY;
         itemType = info.itemType;
         container = info.container;
     }
-
+*/
     protected Intent getIntent() {
         final String METHODNAME = "getIntent";
         throw new RuntimeException("Unexpected Intent");

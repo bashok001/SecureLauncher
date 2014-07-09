@@ -66,6 +66,10 @@ public class SecLaunchContext {
         final String METHODNAME = "insertIntoSlCArraylist";
         if(slContainerArraylist == null)
             slContainerArraylist=new ArrayList<SecLaunchContainer>();
+
+        if(order > slContainerArraylist.size())
+            while(slContainerArraylist.size() != order)
+
         this.slContainerArraylist.add(order,secLaunchContainer);
     }
 

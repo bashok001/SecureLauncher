@@ -39,7 +39,8 @@ public class ItemInfo {
     long id = NO_ID;
     
     /**
-     * One of {@link LauncherSettings.ITEM_TYPE_APPLICATION},
+     * One of
+     * {@link LauncherSettings.ITEM_TYPE_APPLICATION},
      * {@link LauncherSettings.ITEM_TYPE_SHORTCUT},
      * {@link LauncherSettings.ITEM_TYPE_FOLDER}, or
      * {@link LauncherSettings.ITEM_TYPE_APPWIDGET}.
@@ -74,7 +75,7 @@ public class ItemInfo {
     /**
      * Title of the item
      */
-    CharSequence title;
+    CharSequence packageName;
 
     public long getId() {
         return id;
@@ -116,25 +117,25 @@ public class ItemInfo {
         this.spanY = spanY;
     }
 
-    public CharSequence getTitle() {
-        return title;
+    public CharSequence getPackageName() {
+        return packageName;
     }
 
-    public void setTitle(CharSequence title) {
-        this.title = title;
+    public void setPackageName(CharSequence packageName) {
+        this.packageName = packageName;
     }
 
-    /*ItemInfo() {
+    ItemInfo() {
         }
-    */
-  /*  public ItemInfo(ItemInfo info) {
+
+    public ItemInfo(ItemInfo info) {
         id = info.id;
         spanX = info.spanX;
         spanY = info.spanY;
         itemType = info.itemType;
         container = info.container;
     }
-*/
+
     protected Intent getIntent() {
         final String METHODNAME = "getIntent";
         throw new RuntimeException("Unexpected Intent");

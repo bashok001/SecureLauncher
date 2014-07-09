@@ -22,7 +22,7 @@ class LauncherSettings {
 
     public static final String CLASSNAME = "LauncherSettings";
 
-    static final String TITLE = "title";
+    static final String PACKAGE_NAME = "packageName";
     static final String INTENT = "intent";
     static final String ITEM_TYPE = "itemType";
     static final int ITEM_TYPE_APPLICATION = 0;

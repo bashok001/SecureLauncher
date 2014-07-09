@@ -18,18 +18,21 @@
 
 package com.syr.csrg.seclauncher.testLoader;
 
-import android.content.ClipData;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 
-import com.syr.csrg.seclauncher.domain.ContainerContext;
 import com.syr.csrg.seclauncher.domain.SecLaunchContext;
 import com.syr.csrg.seclauncher.packDefinitions.ItemInfo;
 import com.syr.csrg.seclauncher.packDefinitions.SecLaunchContainer;
 import com.syr.csrg.seclauncher.packDefinitions.SecLaunchSubContainer;
+import com.syr.csrg.seclauncher.packDefinitions.ShortcutInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Loader {
-    public void load(){
+    public void load(Context c){
         SecLaunchContext slc = SecLaunchContext.getInstance();
         ArrayList<SecLaunchContainer> slContainerArraylist = slc.getSlContainerArraylist();
         SecLaunchContainer testContatiner = new SecLaunchContainer(){
@@ -41,18 +44,24 @@ public class Loader {
 
         testSubContainer.setSubContainerID("test");
 
-        ItemInfo in = new ItemInfo();
-        in.setId(01);
-        in.setContainer(01);
-        in.setItemType(01);
-        in.setSpanX(01);
-        in.setSpanY(01);
-        in.setTitle("com.android.");
+        PackageManager pm = c.getPackageManager();
+        List<ApplicationInfo> l= pm.getInstalledApplications(0);
+        for (int i = 0; i < l.size(); i++) {
+            String pkg = l.get(i).packageName;
+            if(c.getPackageManager().getLaunchIntentForPackage(pkg)!=null){
+                ShortcutInfo in = new ShortcutInfo();
+                in.setId(01);
+                in.setContainer(01);
+                in.setItemType(01);
+                in.setSpanX(01);
+                in.setSpanY(01);
+                in.setPackageName(pkg);
+                in.setIcon(c.getPackageManager().getApplicationIcon(l.get(i)));
+                testSubContainer.getItems().add(in);
+            }
+        }
 
-        testSubContainer.insertIntoItemList(0,);
-        testContatiner.insertIntoScList(0, );
-
-
+        testContatiner.insertIntoScList(0,testSubContainer);
         slContainerArraylist.add(0,testContatiner);
     }
 }

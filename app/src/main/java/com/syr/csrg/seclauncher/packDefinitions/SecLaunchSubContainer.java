@@ -66,4 +66,9 @@ public abstract class SecLaunchSubContainer {
             items = new ArrayList<ItemInfo>();
         this.items.add(order, itemInfo);
     }
+
+    public void addToSubContainers(ItemInfo itemInfo){
+        items.add(itemInfo);
+        subContainerContext.addToNoOfApps();
+    }
 }

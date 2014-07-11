@@ -65,4 +65,9 @@ public abstract class SecLaunchContainer {
             subContainers = new ArrayList<SecLaunchSubContainer>();
         this.subContainers.add(order, secLaunchSubContainer);
     }
+
+    public void addToSubContainers(SecLaunchSubContainer secLaunchSubContainer){
+        subContainers.add(secLaunchSubContainer);
+        containerContext.addToSubs();
+    }
 }

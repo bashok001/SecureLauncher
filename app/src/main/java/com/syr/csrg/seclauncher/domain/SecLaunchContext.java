@@ -73,4 +73,9 @@ public class SecLaunchContext {
         this.slContainerArraylist.add(order,secLaunchContainer);
     }
 
+    public void addToContainers(SecLaunchContainer secLaunchContainer){
+        slContainerArraylist.add(secLaunchContainer);
+        noOfContainers++;
+    }
+
 }

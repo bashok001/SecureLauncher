@@ -57,6 +57,7 @@ public class Loader {
                 in.setSpanY(01);
                 in.setPackageName(pkg);
                 in.setIcon(c.getPackageManager().getApplicationIcon(l.get(i)));
+                in.setAppName(l.get(i).name);
                 testSubContainer.addToItems(in);
             }
         }

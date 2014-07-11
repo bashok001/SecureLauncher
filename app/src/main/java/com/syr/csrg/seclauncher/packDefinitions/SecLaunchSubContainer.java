@@ -67,7 +67,7 @@ public abstract class SecLaunchSubContainer {
         this.items.add(order, itemInfo);
     }
 
-    public void addToSubContainers(ItemInfo itemInfo){
+    public void addToItems(ItemInfo itemInfo){
         items.add(itemInfo);
         subContainerContext.addToNoOfApps();
     }

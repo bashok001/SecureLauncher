@@ -57,11 +57,11 @@ public class Loader {
                 in.setSpanY(01);
                 in.setPackageName(pkg);
                 in.setIcon(c.getPackageManager().getApplicationIcon(l.get(i)));
-                testSubContainer.getItems().add(in);
+                testSubContainer.addToItems(in);
             }
         }
 
-        testContatiner.insertIntoScList(0,testSubContainer);
-        slContainerArraylist.add(0,testContatiner);
+        testContatiner.addToSubContainers(testSubContainer);
+        slc.addToContainers(testContatiner);
     }
 }

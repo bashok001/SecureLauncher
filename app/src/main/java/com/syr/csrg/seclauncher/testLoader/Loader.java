@@ -60,7 +60,7 @@ public class Loader {
                 testSubContainer.addToItems(in);
             }
         }
-
+        testSubContainer.getSubContainerContext().getNoOfApps();
         testContatiner.addToSubContainers(testSubContainer);
         slc.addToContainers(testContatiner);
     }

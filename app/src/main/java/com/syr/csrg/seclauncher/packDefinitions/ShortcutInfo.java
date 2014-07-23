@@ -86,11 +86,10 @@ public class ShortcutInfo extends ItemInfo {
         PackageInfo pi = null;
         try {
             PackageManager pm = context.getPackageManager();
-
             pi = pm.getPackageInfo(packageName, 0);
         } catch (NameNotFoundException e) {
             //TODO
-            // Log.d("ShortcutInfo", "PackageManager.getPackageInfo failed for " + packageName);
+
         }
         return pi;
     }
@@ -102,6 +101,7 @@ public class ShortcutInfo extends ItemInfo {
             icon = pm.getApplicationIcon(packageName.toString());
         } catch (NameNotFoundException e) {
             //TODO
+
         }
         return icon;
     }

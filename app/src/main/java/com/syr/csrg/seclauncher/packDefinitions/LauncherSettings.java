@@ -18,7 +18,7 @@
 
 package com.syr.csrg.seclauncher.packDefinitions;
 
-class LauncherSettings {
+public class LauncherSettings {
 
     public static final String CLASSNAME = "LauncherSettings";
 

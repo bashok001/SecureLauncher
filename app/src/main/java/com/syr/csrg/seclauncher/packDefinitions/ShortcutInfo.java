@@ -65,21 +65,36 @@ public class ShortcutInfo extends ItemInfo {
         itemType = LauncherSettings.ITEM_TYPE_SHORTCUT;
     }
 
-    protected Intent getIntent() {
+    public Intent getIntent() {
         return intent;
     }
-    
-    public ShortcutInfo(Context context, ShortcutInfo info) {
-        super(info);
-        packageName = info.packageName.toString();
-        intent = new Intent(info.intent);
-        if (info.iconResource != null) {
-            iconResource = new Intent.ShortcutIconResource();
-            iconResource.packageName = info.iconResource.packageName;
-            iconResource.resourceName = info.iconResource.resourceName;
-        }
-        mIcon = info.mIcon;
-        customIcon = info.customIcon;
+
+    public void setIntent(Intent intent) {
+        this.intent = intent;
+    }
+
+    public boolean isCustomIcon() {
+        return customIcon;
+    }
+
+    public void setCustomIcon(boolean customIcon) {
+        this.customIcon = customIcon;
+    }
+
+    public boolean isUsingFallbackIcon() {
+        return usingFallbackIcon;
+    }
+
+    public void setUsingFallbackIcon(boolean usingFallbackIcon) {
+        this.usingFallbackIcon = usingFallbackIcon;
+    }
+
+    public Intent.ShortcutIconResource getIconResource() {
+        return iconResource;
+    }
+
+    public void setIconResource(Intent.ShortcutIconResource iconResource) {
+        this.iconResource = iconResource;
     }
 
     public static PackageInfo getPackageInfo(Context context, String packageName) {

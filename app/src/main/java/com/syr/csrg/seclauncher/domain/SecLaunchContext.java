@@ -27,6 +27,15 @@ public class SecLaunchContext {
 
     private static SecLaunchContext secLaunchContext = null;
     private ArrayList<SecLaunchContainer> slContainerArraylist;
+    private static int secLaunchMode = 0;
+
+    public static int getSecLaunchMode() {
+        return secLaunchMode;
+    }
+
+    public static void setSecLaunchMode(int secLaunchMode) {
+        SecLaunchContext.secLaunchMode = secLaunchMode;
+    }
 
     static int noOfContainers;
 

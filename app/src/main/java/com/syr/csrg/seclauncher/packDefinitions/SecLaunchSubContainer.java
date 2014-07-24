@@ -28,19 +28,19 @@ public abstract class SecLaunchSubContainer {
     private static SubContainerContext subContainerContext;
 
     ArrayList<ItemInfo> items;
-    private String subContainerID;
+    private int subContainerID;
 
     public SecLaunchSubContainer(){
         final String METHODNAME = "SecLaunchSubContainer";
         items = new ArrayList<ItemInfo>();
     }
 
-    public String getSubContainerID() {
+    public int getSubContainerID() {
         final String METHODNAME = "getSubContainerID";
         return subContainerID;
     }
 
-    public void setSubContainerID(String subContainerID) {
+    public void setSubContainerID(int subContainerID) {
         final String METHODNAME = "setSubContainerID";
         this.subContainerID = subContainerID;
     }

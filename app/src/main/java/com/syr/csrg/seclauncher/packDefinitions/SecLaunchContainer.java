@@ -27,9 +27,9 @@ public abstract class SecLaunchContainer {
     private static ContainerContext containerContext;
 
     ArrayList<SecLaunchSubContainer> subContainers;
-    private String containerID;
+    private int containerID;
 
-    public String getContainerID() {
+    public int getContainerID() {
         final String METHODNAME = "getContainerID";
         return containerID;
     }
@@ -39,7 +39,7 @@ public abstract class SecLaunchContainer {
         subContainers = new ArrayList<SecLaunchSubContainer>();
     }
 
-    public void setContainerID(String containerID) {
+    public void setContainerID(int containerID) {
         final String METHODNAME = "setContainerID";
         this.containerID = containerID;
     }

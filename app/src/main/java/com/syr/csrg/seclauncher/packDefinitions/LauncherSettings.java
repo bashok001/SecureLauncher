@@ -37,4 +37,15 @@ public class LauncherSettings {
     public static final String SPANY = "spanY";
     public static final int ITEM_TYPE_FOLDER = 2;
     public static final int ITEM_TYPE_APPWIDGET = 4;
+
+    public static final int NO_ACCESS_CONTROL_MODE = 0;
+    public static final int PARENTAL_CONTROL_MODE = 1;
+    public static final int INTENT_FIREWALL_ACTIVE_MODE = 2;
+
+    public static final int HOME_SCREEN_SC = 1;
+    public static final int QUICK_ACCESS_PANEL_SC = 2;
+    public static final int APP_DRAWER_SC = 3;
+    public static final int FOLDER_SC = 4;
+
+
 }

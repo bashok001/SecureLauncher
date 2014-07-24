@@ -125,17 +125,6 @@ public class ItemInfo {
         this.packageName = packageName;
     }
 
-    ItemInfo() {
-        }
-
-    public ItemInfo(ItemInfo info) {
-        id = info.id;
-        spanX = info.spanX;
-        spanY = info.spanY;
-        itemType = info.itemType;
-        container = info.container;
-    }
-
     protected Intent getIntent() {
         final String METHODNAME = "getIntent";
         throw new RuntimeException("Unexpected Intent");

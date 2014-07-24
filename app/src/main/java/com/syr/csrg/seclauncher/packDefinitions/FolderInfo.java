@@ -23,6 +23,15 @@ import java.util.ArrayList;
 public class FolderInfo extends ItemInfo {
     ArrayList<ShortcutInfo> appsInFolder = new ArrayList<ShortcutInfo>();
     boolean opened;
+    String folderName;
+
+    public String getFolderName() {
+        return folderName;
+    }
+
+    public void setFolderName(String folderName) {
+        this.folderName = folderName;
+    }
 
     public void add(ShortcutInfo item){
         appsInFolder.add(item);
@@ -32,11 +41,12 @@ public class FolderInfo extends ItemInfo {
         appsInFolder.remove(item);
     }
 
-    FolderInfo() {
-        itemType = LauncherSettings.ITEM_TYPE_FOLDER;
+    public ArrayList<ShortcutInfo> getAppsInFolder() {
+        return appsInFolder;
     }
-    public void setTitle(CharSequence title) {
-        this.packageName = title;
+
+    public FolderInfo() {
+        itemType = LauncherSettings.ITEM_TYPE_FOLDER;
     }
 
     @Override

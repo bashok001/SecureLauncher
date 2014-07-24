@@ -17,5 +17,8 @@
   -->
 
 <resources>
-    <string name="app_name">SecureLauncher</string>
+
+    <string name="app_name">Secure Launcher</string>
+    <string name="title_activity_app_drawer">Apps</string>
+
 </resources>

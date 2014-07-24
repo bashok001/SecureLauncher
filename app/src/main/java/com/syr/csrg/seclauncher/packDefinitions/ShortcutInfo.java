@@ -36,12 +36,6 @@ public class ShortcutInfo extends ItemInfo {
     boolean customIcon;
     boolean usingFallbackIcon;
 
-   /*
-   * App Name
-   */
-    String appName;
-
-
     /**
      * If isShortcut=true and customIcon=false, this contains a reference to the
      * shortcut icon as an application's resource.
@@ -52,6 +46,10 @@ public class ShortcutInfo extends ItemInfo {
      * The application icon.
      */
     private Drawable mIcon;
+   /*
+   * App Name
+   */
+    private String appName;
 
     public String getAppName() {
         return appName;

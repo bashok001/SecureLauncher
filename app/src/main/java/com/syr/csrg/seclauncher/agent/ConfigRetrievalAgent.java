@@ -27,13 +27,13 @@ import java.util.ArrayList;
 
 public class ConfigRetrievalAgent {
     public static SecLaunchContainer getContainerByCurrentMode(){
-        return new Loader().getContainters();
+        return Loader.getInstance().getContainters();
     }
 
     public static ArrayList<SecLaunchSubContainer> getSubContainersById(int subContainerID) {
-        if(subContainerID == LauncherSettings.HOME_SCREEN_SC) return new Loader().getHomeScreenSubContainters();
-        if(subContainerID == LauncherSettings.APP_DRAWER_SC) return new Loader().getAppDrawerSubContainters();
-        if(subContainerID == LauncherSettings.QUICK_ACCESS_PANEL_SC) return new Loader().getQAPSubContainters();
+        if(subContainerID == LauncherSettings.HOME_SCREEN_SC) return Loader.getInstance().getHomeScreenSubContainters();
+        if(subContainerID == LauncherSettings.APP_DRAWER_SC) return Loader.getInstance().getAppDrawerSubContainters();
+        if(subContainerID == LauncherSettings.QUICK_ACCESS_PANEL_SC) return Loader.getInstance().getQAPSubContainters();
         return new ArrayList<SecLaunchSubContainer>();
     }
 }

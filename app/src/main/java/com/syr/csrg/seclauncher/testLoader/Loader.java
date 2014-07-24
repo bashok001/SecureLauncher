@@ -34,6 +34,14 @@ import java.util.List;
 
 public class Loader {
 
+    private Loader(){}
+
+    static Loader instance;
+    public static Loader getInstance() {
+        if (instance == null)
+            instance = new Loader();
+        return instance;
+    }
     SecLaunchContainer noAccessControlContainer;
     SecLaunchSubContainer homeScreenSubContatiner1, appdrawerSubContainer, homeScreenSubContatiner2, homeScreenSubContatiner3, quickAccessPanelSubContatiner1;
     public void load(Context c){
@@ -98,7 +106,7 @@ public class Loader {
                         in1.setSpanX(01);
                         in1.setSpanY(01);
                         in1.setPackageName(pkg);
-                        in1.setAppName(pm.getApplicationLabel(l.get(i)).toString());
+                        in1.setAppName(pm.getApplicationLabel(l.get(j)).toString());
                         in1.setIntent(c.getPackageManager().getLaunchIntentForPackage(pkg1));
                         in1.setIcon(c.getPackageManager().getApplicationIcon(l.get(j)));
                         in.add(in1);
@@ -117,7 +125,7 @@ public class Loader {
                         in1.setSpanY(01);
                         
                         in1.setPackageName(pkg);
-                        in1.setAppName(pm.getApplicationLabel(l.get(i)).toString());
+                        in1.setAppName(pm.getApplicationLabel(l.get(j)).toString());
                         in1.setIntent(c.getPackageManager().getLaunchIntentForPackage(pkg1));
                         in1.setIcon(c.getPackageManager().getApplicationIcon(l.get(j)));
                         in.add(in1);
@@ -146,7 +154,7 @@ public class Loader {
                         in1.setSpanY(01);
                         //in.setPackageName(pkg);
                         in1.setPackageName(pkg);
-                        in1.setAppName(pm.getApplicationLabel(l.get(i)).toString());
+                        in1.setAppName(pm.getApplicationLabel(l.get(j)).toString());
                         in1.setIntent(c.getPackageManager().getLaunchIntentForPackage(pkg1));
                         in1.setIcon(c.getPackageManager().getApplicationIcon(l.get(j)));
                         in.add(in1);

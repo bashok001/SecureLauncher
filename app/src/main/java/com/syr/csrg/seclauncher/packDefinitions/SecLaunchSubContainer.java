@@ -18,7 +18,6 @@
 
 package com.syr.csrg.seclauncher.packDefinitions;
 
-import com.syr.csrg.seclauncher.domain.ContainerContext;
 import com.syr.csrg.seclauncher.domain.SubContainerContext;
 
 import java.util.ArrayList;

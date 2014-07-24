@@ -18,12 +18,25 @@
 
 package com.syr.csrg.seclauncher.packDefinitions;
 
+import com.syr.csrg.seclauncher.R;
+
 import java.util.ArrayList;
 
 public class FolderInfo extends ItemInfo {
     ArrayList<ShortcutInfo> appsInFolder = new ArrayList<ShortcutInfo>();
     boolean opened;
     String folderName;
+    int folderBackgroundColor;
+
+    public int getFolderBackgroundColor() {
+        return folderBackgroundColor;
+    }
+
+    public void setFolderBackgroundColor(int folderBackgroundColor) {
+        this.folderBackgroundColor = folderBackgroundColor;
+    }
+
+
 
     public String getFolderName() {
         return folderName;

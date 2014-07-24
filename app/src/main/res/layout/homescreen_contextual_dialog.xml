@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="220dp"
+    android:id="@+id/main"
+    android:background="@android:color/darker_gray"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:id="@+id/homescreenTxt"
+        android:textStyle="bold"
+        android:text ="Home screen"/>
+
+    <TextView
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="#006666"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:id="@+id/setWallpaperTxt"
+        android:textStyle="bold"
+        android:text ="Set wallpaper"/>
+
+    <TextView
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="10dp"
+        android:background="@android:color/darker_gray"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:id="@+id/addToHomescreenTxt"
+        android:textStyle="bold"
+        android:text ="Add to Home Screen"/>
+
+    <TextView
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="#006666"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:id="@+id/appsAndWidgetsTxt"
+        android:textStyle="bold"
+        android:text ="Apps"/>
+
+    <TextView
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:padding="10dp"
+        android:background="#006666"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:id="@+id/newFolderTxt"
+        android:textStyle="bold"
+        android:text ="Folder"/>
+
+    <TextView
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginTop="1dp"
+        android:background="#006666"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:id="@+id/newPageTxt"
+        android:textStyle="bold"
+        android:text ="Page"/>
+
+</LinearLayout>

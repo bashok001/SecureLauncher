@@ -71,8 +71,7 @@ public class AppDrawerActivity extends FragmentActivity {
         {
             int count = 0;
             ArrayList<ItemInfo> subContainerItems = subContainers.get(0).getItems();
-            for (int i = 0; i < subContainerItems.size(); i++)
-            {
+            for (int i = 0; i < subContainerItems.size(); i++) {
                 if (subContainerItems.get(i).getItemType() == LauncherSettings.ITEM_TYPE_SHORTCUT)
                     count++;
             }

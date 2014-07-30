@@ -35,8 +35,9 @@ public class SecLauncherProvider extends ContentProvider{
 
     static final String AUTHORITY = ProviderConfig.AUTHORITY;
 
-    static final Uri CONTENT_APPWIDGET_RESET_URI =
-            Uri.parse("content://" + AUTHORITY + "/appWidgetReset");
+ /*   static final Uri CONTENT_APPWIDGET_RESET_URI =
+            Uri.parse("content://" + AUTHORITY + "/appWidgetReset");*/
+
 
     @Override
     public boolean onCreate() {

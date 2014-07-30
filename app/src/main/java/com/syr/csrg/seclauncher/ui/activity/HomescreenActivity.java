@@ -26,6 +26,7 @@ import com.syr.csrg.seclauncher.ui.adapter.HomescreenViewPagerAdapter;
 import com.syr.csrg.seclauncher.ui.indicator.CirclePageIndicator;
 import com.syr.csrg.seclauncher.ui.indicator.PageIndicator;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class HomescreenActivity extends FragmentActivity
@@ -87,14 +88,19 @@ public class HomescreenActivity extends FragmentActivity
 
             for (int i = 0; i < subContainerItems.size() && i < columnCount; i++)
             {
+                LayoutInflater factory = LayoutInflater.from(this);
+                View myView = factory.inflate(R.layout.homescreen_item, null);
+                ArrayList<View> allViews = new ArrayList<View>();
+                allViews.add(myView);
                 if (subContainerItems.get(i) != null)
                 {
+
                     if (subContainerItems.get(i).getItemType() == LauncherSettings.ITEM_TYPE_SHORTCUT)
                     {
                         final ShortcutInfo item = (ShortcutInfo) subContainerItems.get(i);
 
-                        LayoutInflater factory = LayoutInflater.from(this);
-                        View myView = factory.inflate(R.layout.homescreen_item, null);
+                       /* LayoutInflater factory = LayoutInflater.from(this);
+                        View myView = factory.inflate(R.layout.homescreen_item, null);*/
 
                         ImageView icon = (ImageView) myView.findViewById(R.id.icon);
                         icon.setImageDrawable(item.getIcon(this));
@@ -123,10 +129,13 @@ public class HomescreenActivity extends FragmentActivity
                     Space spacer = new Space(this);
 
                     GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+
                     params.width = itemWidth;
                     params.height =  GridLayout.LayoutParams.WRAP_CONTENT;
                     params.setGravity(Gravity.CENTER);
+
                     spacer.setLayoutParams(params);
+                   /*spacer.addTouchables(allViews);*/
                     gl.addView(spacer);
                 }
             }

@@ -36,8 +36,6 @@ public class FolderInfo extends ItemInfo {
         this.folderBackgroundColor = folderBackgroundColor;
     }
 
-
-
     public String getFolderName() {
         return folderName;
     }

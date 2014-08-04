@@ -23,4 +23,19 @@
     <style name="FullHeightDialog" parent="android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="FolderOpenAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_folder_open_fadein</item>
+        <item name="android:windowExitAnimation">@anim/dialog_folder_open_fadeout</item>
+    </style>
+
+    <style name="FolderCreateAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_create_folder_fadein</item>
+        <item name="android:windowExitAnimation">@anim/dialog_create_folder_fadeout</item>
+    </style>
+
+    <style name="HomeScreenMenuAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_homescreen_menu_bouncein</item>
+        <item name="android:windowExitAnimation">@anim/dialog_homescreen_menu_bounceout</item>
+    </style>
 </resources>

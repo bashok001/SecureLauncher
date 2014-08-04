@@ -37,6 +37,7 @@ public class LauncherSettings {
     public static final String SPANY = "spanY";
     public static final int ITEM_TYPE_FOLDER = 2;
     public static final int ITEM_TYPE_APPWIDGET = 4;
+    public static final int ITEM_TYPE_SPACER = 5;
 
     public static final int NO_ACCESS_CONTROL_MODE = 0;
     public static final int PARENTAL_CONTROL_MODE = 1;

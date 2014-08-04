@@ -19,6 +19,7 @@
 package com.syr.csrg.seclauncher.packDefinitions;
 
 import com.syr.csrg.seclauncher.domain.ContainerContext;
+import com.syr.csrg.seclauncher.testLoader.Loader;
 
 import java.util.ArrayList;
 
@@ -69,5 +70,7 @@ public abstract class SecLaunchContainer {
     public void addToSubContainers(SecLaunchSubContainer secLaunchSubContainer){
         subContainers.add(secLaunchSubContainer);
         containerContext.addToSubs();
+
+        Loader.getInstance().getHomeScreenSubContainters().add(secLaunchSubContainer);
     }
 }

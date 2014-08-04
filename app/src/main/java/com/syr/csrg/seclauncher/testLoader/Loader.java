@@ -21,6 +21,7 @@ package com.syr.csrg.seclauncher.testLoader;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 
 import com.syr.csrg.seclauncher.domain.SecLaunchContext;
 import com.syr.csrg.seclauncher.packDefinitions.FolderInfo;
@@ -61,7 +62,7 @@ public class Loader {
 
         homeScreenSubContatiner1.setSubContainerID(LauncherSettings.HOME_SCREEN_SC);
 
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 22; i++) {
             String pkg = l.get(i).packageName;
             if(c.getPackageManager().getLaunchIntentForPackage(pkg)!=null){
                 ShortcutInfo in = new ShortcutInfo();
@@ -82,6 +83,7 @@ public class Loader {
                 in.setPackageName("Unused");
                 in.setItemType(02);
                 in.setFolderName("Unused");
+                in.setFolderBackgroundColor(Color.parseColor("#669933"));
 
                 homeScreenSubContatiner1.getItems().add(in);
             }
@@ -94,6 +96,7 @@ public class Loader {
                 in.setPackageName("Bank");
                 in.setItemType(02);
                 in.setFolderName("Bank");
+                in.setFolderBackgroundColor(Color.parseColor("#669933"));
 
                 for (int j = 0; j < 30; j++)
                 {
@@ -141,6 +144,7 @@ public class Loader {
                 in.setPackageName("Phone");
                 in.setItemType(02);
                 in.setFolderName("Phone");
+                in.setFolderBackgroundColor(Color.parseColor("#669933"));
 
                 for (int j = 5; j < 25; j++)
                 {
@@ -314,12 +318,17 @@ public class Loader {
         as.add(quickAccessPanelContatiner);*/
         return noAccessControlContainer;
     }
-
+static int i = 0;
+    ArrayList<SecLaunchSubContainer> as = new ArrayList<SecLaunchSubContainer>();
     public ArrayList<SecLaunchSubContainer> getHomeScreenSubContainters(){
-        ArrayList<SecLaunchSubContainer> as = new ArrayList<SecLaunchSubContainer>();
-        as.add(homeScreenSubContatiner1);
-        as.add(homeScreenSubContatiner2);
-        as.add(homeScreenSubContatiner3);
+        if(i==0){
+
+            as.add(homeScreenSubContatiner1);
+            as.add(homeScreenSubContatiner2);
+            as.add(homeScreenSubContatiner3);
+            i++;
+        }
+
 
         return as;
     }

@@ -43,4 +43,11 @@
     <color name="seclaunch_color_asbestos">#7f8c8d</color>
 
     <color name="seclaunch_color_transparent">@android:color/transparent</color>
+    <color name="seclaunch_color_dark_green">#669933</color>
+    <color name="seclaunch_color_dark_blue">#333366</color>
+    <color name="seclaunch_color_maroon">#660033</color>
+    <color name="seclaunch_color_pista_green">#666633</color>
+    <color name="seclaunch_color_purple">#663366</color>
+    <color name="seclaunch_color_biscuit">#999966</color>
+    <color name="seclaunch_color_gray">#aaaaaa</color>
 </resources>

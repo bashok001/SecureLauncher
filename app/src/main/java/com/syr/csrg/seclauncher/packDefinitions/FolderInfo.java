@@ -18,6 +18,8 @@
 
 package com.syr.csrg.seclauncher.packDefinitions;
 
+import android.graphics.Color;
+
 import com.syr.csrg.seclauncher.R;
 
 import java.util.ArrayList;
@@ -35,6 +37,8 @@ public class FolderInfo extends ItemInfo {
     public void setFolderBackgroundColor(int folderBackgroundColor) {
         this.folderBackgroundColor = folderBackgroundColor;
     }
+
+
 
     public String getFolderName() {
         return folderName;

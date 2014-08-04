@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/colorSetting"
+    android:background="@android:color/holo_green_dark" >
+
+    <HorizontalScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:background="#333300" >
+
+        <RadioGroup android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton android:id="@+id/greenColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_green_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/grayColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_gray_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/maroonColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_maroon_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/biscuitColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_biscuit_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/darkblueColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_darkblue_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/greenseaColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_greensea_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/purpleColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_purple_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/pistagreenColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_pistagreen_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/blueColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_blue_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/orangeColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_orange_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/amethystColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_amethyst_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/pomegranateColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_pomegranate_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+            <RadioButton android:id="@+id/asbestosColorRB"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/folder_asbestos_color_cb"
+                android:button="@drawable/folder_checkbox_check_selector"
+                android:layout_margin="5dp" />
+
+        </RadioGroup>
+
+    </HorizontalScrollView>
+</LinearLayout>

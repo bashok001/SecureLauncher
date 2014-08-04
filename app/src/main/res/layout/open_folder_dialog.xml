@@ -3,19 +3,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:id="@+id/main"
+    android:id="@+id/folderDialog"
     android:layout_margin="0dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true" >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:id="@+id/folderHeadingLayout"
         android:background="@android:color/holo_blue_dark"
-        android:textColor="@android:color/white"
-        android:textSize="15sp"
-        android:id="@+id/folderName"
-        android:text ="Folder Name"/>
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:layout_gravity="left"
+            android:gravity="left"
+            android:layout_weight="1"
+            android:id="@+id/folderName"
+            android:text ="Folder Name"/>
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:gravity="right"
+            android:visibility="invisible"
+            android:id="@+id/folderSettings"
+            android:background="@drawable/folder_settings"/>
+
+
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="wrap_content"

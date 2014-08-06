@@ -22,7 +22,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +37,6 @@ import com.syr.csrg.seclauncher.ui.adapter.HomescreenViewPagerAdapter;
 import com.syr.csrg.seclauncher.ui.indicator.CirclePageIndicator;
 import com.syr.csrg.seclauncher.ui.indicator.PageIndicator;
 
-
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,10 +48,11 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
     ImageView mTrashIcon, mContainer, mInfoIcon;
     //DD
     public static final String HOMESCREEN_POSITION = "position";
-	
+
     HomescreenViewPagerAdapter pageAdapter = null;
     PageIndicator mIndicator = null;
     View rootView;
+
     public static final HomescreenFragment newInstance(int position) {
         HomescreenFragment fragment = new HomescreenFragment();
         Bundle bdl = new Bundle(1);
@@ -68,7 +67,7 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView= inflater.inflate(R.layout.homescreen, container, false);
+        rootView = inflater.inflate(R.layout.homescreen, container, false);
 
         int position = 0;
 
@@ -84,194 +83,189 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
         final ViewPager pager = (ViewPager) rootView.findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
 
-        mIndicator = (CirclePageIndicator)rootView.findViewById(R.id.viewpagerindicator);
+        mIndicator = (CirclePageIndicator) rootView.findViewById(R.id.viewpagerindicator);
         mIndicator.setViewPager(pager);
 
         loadQuickAccessPanel(rootView);
-            mContainer = (ImageView) rootView.findViewById(R.id.container);
-            mContainer.setVisibility(View.INVISIBLE);
+        mContainer = (ImageView) rootView.findViewById(R.id.container);
+        mContainer.setVisibility(View.INVISIBLE);
 
-            mInfoIcon = (ImageView) rootView.findViewById(R.id.information);
-            mInfoIcon.setVisibility(View.INVISIBLE);
+        mInfoIcon = (ImageView) rootView.findViewById(R.id.information);
+        mInfoIcon.setVisibility(View.INVISIBLE);
 
-            mTrashIcon = (ImageView) rootView.findViewById(R.id.trash);
-            mTrashIcon.setVisibility(View.INVISIBLE);
+        mTrashIcon = (ImageView) rootView.findViewById(R.id.trash);
+        mTrashIcon.setVisibility(View.INVISIBLE);
 
-            mTrashIcon.setOnDragListener(new View.OnDragListener() {
-                @Override
-                public boolean onDrag(View view, DragEvent dragEvent) {
-                    try {
+        mTrashIcon.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                try {
 
-                        View sourceView = (View) dragEvent.getLocalState();
-                        int startPage = pager.getCurrentItem();
-                        switch (dragEvent.getAction()) {
-                            case DragEvent.ACTION_DRAG_STARTED:
-                                break;
-                            case DragEvent.ACTION_DRAG_ENTERED:
-                                if (view.getId() == R.id.trash) {
-                                    view.animate().scaleX(1.2f);
-                                    view.animate().scaleY(1.2f);
-                                }
-                                break;
-                            case DragEvent.ACTION_DRAG_EXITED:
-                                if (view != null && view.getId() == R.id.trash) {
-                                    view.animate().scaleX(1.0f);
-                                    view.animate().scaleY(1.0f);
-                                    Toast.makeText(getActivity(), "Exit!", Toast.LENGTH_SHORT).show();
-                                    view.invalidate();
-                                }
-                                break;
-                            case DragEvent.ACTION_DROP:
-                                try {
-                                    if (sourceView instanceof ViewGroup)
-                                         Toast.makeText(getActivity(), "Deleted!", Toast.LENGTH_LONG).show();
-
-                                         ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
-                                         TextView textView = (TextView) gridMap_text.get(sourceView);
-
-                                         imageView.setImageBitmap(null);
-                                         textView.setText(null);
-                                         view.invalidate();
-
-                                }catch(Exception e){
-                                    Log.v("Tag", "print Exception: "+e);
-                                }
-                                break;
-                            case DragEvent.ACTION_DRAG_LOCATION:
-                                break;
-                            case DragEvent.ACTION_DRAG_ENDED:
-                                if (view != null && view.getId() == R.id.trash) {
-                                    view.animate().scaleX(1.0f);
-                                    view.animate().scaleY(1.0f);
-                                }
-                                mTrashIcon.setVisibility(View.INVISIBLE);
-                                break;
-                        }
-                    }catch(Exception e){
-                        Log.v("Tag", "print Exception: "+e);
-                    }
-                    return true;
-                }
-            });
-
-            mContainer.setOnDragListener(new View.OnDragListener() {
-                @Override
-                public boolean onDrag(View view, DragEvent dragEvent) {
                     View sourceView = (View) dragEvent.getLocalState();
-                    ViewGroup owner = (ViewGroup) sourceView.getParent().getParent();
                     int startPage = pager.getCurrentItem();
                     switch (dragEvent.getAction()) {
                         case DragEvent.ACTION_DRAG_STARTED:
                             break;
                         case DragEvent.ACTION_DRAG_ENTERED:
-                            if (view.getId() == R.id.container) {
+                            if (view.getId() == R.id.trash) {
                                 view.animate().scaleX(1.2f);
                                 view.animate().scaleY(1.2f);
                             }
                             break;
                         case DragEvent.ACTION_DRAG_EXITED:
-                            if (view.getId() == R.id.container) {
+                            if (view != null && view.getId() == R.id.trash) {
                                 view.animate().scaleX(1.0f);
                                 view.animate().scaleY(1.0f);
-                                Toast.makeText(getActivity(), "Exit!", Toast.LENGTH_LONG).show();
-                                view.invalidate();
-                            }
-                            break;
-                        case DragEvent.ACTION_DROP:
-                            //Toast.makeText(getApplicationContext(),"Deleted!",Toast.LENGTH_LONG).show();
-                            if (view.getId() == R.id.container) {
-
-                                //if (owner != null && owner instanceof GridLayout) {
-                                if (owner.getId() == R.id.gridContainer) {
-                                    GridLayout gridLayout = (GridLayout) owner;
-                                    int pos = gridLayout.indexOfChild(sourceView);
-                                    //int c = pos + startPage * 5;
-                                    Toast.makeText(getActivity(), "Deleted!", Toast.LENGTH_LONG).show();
-                                    //SecLaunchContext.removeContainer(c);
-                                    //onUpdateIcons();
-                                }
-                                //}
-                            }
-                            break;
-                        case DragEvent.ACTION_DRAG_LOCATION:
-                            break;
-                        case DragEvent.ACTION_DRAG_ENDED:
-                            if (view.getId() == R.id.container) {
-                                view.animate().scaleX(1.0f);
-                                view.animate().scaleY(1.0f);
-                            }
-                            mContainer.setVisibility(View.INVISIBLE);
-                            break;
-                    }
-                    return true;
-                }
-            });
-
-            mInfoIcon.setOnDragListener(new View.OnDragListener() {
-                @Override
-                public boolean onDrag(View view, DragEvent dragEvent) {
-                    View sourceView = (View) dragEvent.getLocalState();
-                    //View sourceView1 = (View) sourceView.getParent();
-                    //System.out.println("SourceView: " + sourceView);
-                    ViewGroup owner = (ViewGroup) sourceView.getParent();
-                    // ViewGroup owner = (ViewGroup) sourceView.getParent().getParent();
-
-                    int startPage = pager.getCurrentItem();
-                    switch (dragEvent.getAction()) {
-                        case DragEvent.ACTION_DRAG_STARTED:
-                            break;
-                        case DragEvent.ACTION_DRAG_ENTERED:
-                            if (view.getId() == R.id.information) {
-                                view.animate().scaleX(1.2f);
-                                view.animate().scaleY(1.2f);
-                            }
-                            break;
-                        case DragEvent.ACTION_DRAG_EXITED:
-                            if (view.getId() == R.id.information) {
-                                view.animate().scaleX(1.0f);
-                                view.animate().scaleY(1.0f);
-                                Toast.makeText(getActivity(), "Exit!", Toast.LENGTH_LONG).show();
                                 view.invalidate();
                             }
                             break;
                         case DragEvent.ACTION_DROP:
                             try {
-
-                                            GridLayout gridLayout = (GridLayout) owner;
-                                            int j = gridLayout.indexOfChild(sourceView/*sourceView.findViewById(R.id.icon)*/);
-                                            int test = j + startPage * 16;
-                                            System.out.println("Test : " + test);
-                                            ShortcutInfo item = (ShortcutInfo) gridMap_shortcutInfo.get(sourceView);
-                                            System.out.println("App1: " + j + " " + item);
-                                            Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                            i.addCategory(Intent.CATEGORY_DEFAULT);
-                                    Log.v("Tag", "Icon Info: "+item.getPackageName());
-                                            i.setData(Uri.parse("package:" + item.getPackageName()));
-                                Log.v("Tag", "Icon info before start ");
-                                startActivity(i);
-                            }catch(Exception e){
+                                if (sourceView instanceof ViewGroup) {
+                                    HomescreenViewPagerFragment.GridItemViewHolder k = (HomescreenViewPagerFragment.GridItemViewHolder) sourceView.getTag();
+                                    if (k.itemType != LauncherSettings.ITEM_TYPE_FOLDER) {
+                                        Toast.makeText(getActivity(), "Deleted!", Toast.LENGTH_LONG).show();
+                                        ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
+                                        TextView textView = (TextView) gridMap_text.get(sourceView);
+                                        imageView.setImageBitmap(null);
+                                        textView.setText(null);
+                                        view.invalidate();
+                                    }
+                                }
+                            } catch (Exception e) {
                                 Log.v("Tag", "print Exception: " + e);
                             }
                             break;
                         case DragEvent.ACTION_DRAG_LOCATION:
                             break;
                         case DragEvent.ACTION_DRAG_ENDED:
-                            if (view.getId() == R.id.information) {
+                            if (view != null && view.getId() == R.id.trash) {
                                 view.animate().scaleX(1.0f);
                                 view.animate().scaleY(1.0f);
                             }
-                            mInfoIcon.setVisibility(View.INVISIBLE);
+                            mTrashIcon.setVisibility(View.INVISIBLE);
                             break;
                     }
-                    return true;
+                } catch (Exception e) {
+                    Log.v("Tag", "print Exception: " + e);
                 }
-            });
+                return true;
+            }
+        });
 
+        mContainer.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                View sourceView = (View) dragEvent.getLocalState();
+                ViewGroup owner = (ViewGroup) sourceView.getParent().getParent();
+                int startPage = pager.getCurrentItem();
+                switch (dragEvent.getAction()) {
+                    case DragEvent.ACTION_DRAG_STARTED:
+                        break;
+                    case DragEvent.ACTION_DRAG_ENTERED:
+                        if (view.getId() == R.id.container) {
+                            view.animate().scaleX(1.2f);
+                            view.animate().scaleY(1.2f);
+                        }
+                        break;
+                    case DragEvent.ACTION_DRAG_EXITED:
+                        if (view.getId() == R.id.container) {
+                            view.animate().scaleX(1.0f);
+                            view.animate().scaleY(1.0f);
+                            Toast.makeText(getActivity(), "Exit!", Toast.LENGTH_LONG).show();
+                            view.invalidate();
+                        }
+                        break;
+                    case DragEvent.ACTION_DROP:
+                        //Toast.makeText(getApplicationContext(),"Deleted!",Toast.LENGTH_LONG).show();
+                        if (view.getId() == R.id.container) {
+                            if (owner.getId() == R.id.gridContainer) {
+                                GridLayout gridLayout = (GridLayout) owner;
+                                int pos = gridLayout.indexOfChild(sourceView);
+                                //int c = pos + startPage * 5;
+                                Toast.makeText(getActivity(), "Deleted!", Toast.LENGTH_LONG).show();
+                                //SecLaunchContext.removeContainer(c);
+                                //onUpdateIcons();
+                            }
+                            //}
+                        }
+                        break;
+                    case DragEvent.ACTION_DRAG_LOCATION:
+                        break;
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        if (view.getId() == R.id.container) {
+                            view.animate().scaleX(1.0f);
+                            view.animate().scaleY(1.0f);
+                        }
+                        mContainer.setVisibility(View.INVISIBLE);
+                        break;
+                }
+                return true;
+            }
+        });
+
+        mInfoIcon.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                View sourceView = (View) dragEvent.getLocalState();
+                //View sourceView1 = (View) sourceView.getParent();
+                //System.out.println("SourceView: " + sourceView);
+                ViewGroup owner = (ViewGroup) sourceView.getParent();
+                // ViewGroup owner = (ViewGroup) sourceView.getParent().getParent();
+
+                int startPage = pager.getCurrentItem();
+                switch (dragEvent.getAction()) {
+                    case DragEvent.ACTION_DRAG_STARTED:
+                        break;
+                    case DragEvent.ACTION_DRAG_ENTERED:
+                        if (view.getId() == R.id.information) {
+                            view.animate().scaleX(1.2f);
+                            view.animate().scaleY(1.2f);
+                        }
+
+                                                   break;
+                    case DragEvent.ACTION_DRAG_EXITED:
+                        if (view.getId() == R.id.information) {
+                            view.animate().scaleX(1.0f);
+                            view.animate().scaleY(1.0f);
+                            Toast.makeText(getActivity(), "Exit!", Toast.LENGTH_LONG).show();
+                            view.invalidate();
+                        }
+                        break;
+                    case DragEvent.ACTION_DROP:
+                        try {/**/
+
+                            GridLayout gridLayout = (GridLayout) owner;
+                            int j = gridLayout.indexOfChild(sourceView);
+                            ShortcutInfo item = (ShortcutInfo) gridMap_shortcutInfo.get(sourceView);
+                            Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            i.addCategory(Intent.CATEGORY_DEFAULT);
+                            Log.v("Tag", "Icon Info: " + item.getPackageName());
+                            i.setData(Uri.parse("package:" + item.getPackageName()));
+                            Log.v("Tag", "Icon info before start ");
+                            startActivity(i);
+                        } catch (Exception e) {
+                            Log.v("Tag", "print Exception: " + e);
+                        }
+                        break;
+                    case DragEvent.ACTION_DRAG_LOCATION:
+                        break;
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        if (view.getId() == R.id.information) {
+                            view.animate().scaleX(1.0f);
+                            view.animate().scaleY(1.0f);
+                        }
+                        mInfoIcon.setVisibility(View.INVISIBLE);
+                        break;
+                }
+                return true;
+            }
+        });
 
 
         pager.setCurrentItem(position, false);
-  		
-		int glowDrawableId = getResources().getIdentifier("overscroll_glow", "drawable", "android");
+
+        int glowDrawableId = getResources().getIdentifier("overscroll_glow", "drawable", "android");
         Drawable androidGlow = getResources().getDrawable(glowDrawableId);
         androidGlow.setColorFilter(Color.BLUE, PorterDuff.Mode.MULTIPLY);
 
@@ -281,22 +275,20 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
 
         return rootView;
     }
-public void onViewChange(int position)
-    {
-        ViewPager pager = (ViewPager)rootView.findViewById(R.id.viewpager);
+
+    public void onViewChange(int position) {
+        ViewPager pager = (ViewPager) rootView.findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
         pager.setCurrentItem(position);
     }
 
-    public void onPageChange()
-    {
+    public void onPageChange() {
         pageAdapter.setCount(pageAdapter.getCount() + 1);
         pageAdapter.notifyDataSetChanged();
         mIndicator.notifyDataSetChanged();
     }
 
-    private void setViewPagerHeight(View rootView)
-    {
+    private void setViewPagerHeight(View rootView) {
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
         float containerHeight = dm.heightPixels;
@@ -309,13 +301,11 @@ public void onViewChange(int position)
         viewPager.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, viewPagerHeight));
     }
 
-    private void loadQuickAccessPanel(View rootView)
-    {
+    private void loadQuickAccessPanel(View rootView) {
         ConfigRetrievalAgent configRetrievalAgent = new ConfigRetrievalAgent();
-        ArrayList<SecLaunchSubContainer> subContainers =  configRetrievalAgent.getSubContainersById(LauncherSettings.QUICK_ACCESS_PANEL_SC);
+        ArrayList<SecLaunchSubContainer> subContainers = configRetrievalAgent.getSubContainersById(LauncherSettings.QUICK_ACCESS_PANEL_SC);
 
-        if(subContainers.size() > 0)
-        {
+        if (subContainers.size() > 0) {
             ArrayList<ItemInfo> subContainerItems = subContainers.get(0).getItems();
 
             GridLayout gl = (GridLayout) rootView.findViewById(R.id.quickacesspanel);
@@ -325,17 +315,15 @@ public void onViewChange(int position)
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
             float containerWidth = dm.widthPixels;
             float pixItemWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 88, getResources().getDisplayMetrics());
-            int columnCount = (int)Math.round(containerWidth/pixItemWidth);
-            int nearestOddColCount = (2 * Math.round(((containerWidth/pixItemWidth) + 1) /2)) - 1;
+            int columnCount = (int) Math.round(containerWidth / pixItemWidth);
+            int nearestOddColCount = (2 * Math.round(((containerWidth / pixItemWidth) + 1) / 2)) - 1;
             gl.setColumnCount(nearestOddColCount);
-            final int itemWidth = (int) containerWidth/nearestOddColCount;
+            final int itemWidth = (int) containerWidth / nearestOddColCount;
             int i = 0, j = 0;
 
-            for (i = 0, j = 0; j < subContainerItems.size() && i < nearestOddColCount; i++)
-            {
+            for (i = 0, j = 0; j < subContainerItems.size() && i < nearestOddColCount; i++) {
                 //adding app drawer in the middle
-                if(i + 1 == Math.ceil(nearestOddColCount/2.0))
-                {
+                if (i + 1 == Math.ceil(nearestOddColCount / 2.0)) {
                     LayoutInflater factory = LayoutInflater.from(getActivity());
                     View myView = factory.inflate(R.layout.homescreen_item, null);
 
@@ -351,9 +339,6 @@ public void onViewChange(int position)
                         }
                     });
 
-                    TextView appname = (TextView) myView.findViewById(R.id.appname);
-                    appname.setText("Apps");
-
                     GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                     params.width = itemWidth;
                     params.height = GridLayout.LayoutParams.WRAP_CONTENT;
@@ -362,31 +347,28 @@ public void onViewChange(int position)
                     gl.addView(myView);
 
 
-                }
-                else {
+                } else {
                     if (subContainerItems.get(j) != null) {
                         if (subContainerItems.get(j).getItemType() == LauncherSettings.ITEM_TYPE_SHORTCUT) {
                             final ShortcutInfo item = (ShortcutInfo) subContainerItems.get(j);
 
-                        LayoutInflater factory = LayoutInflater.from(getActivity());
-                        View myView = factory.inflate(R.layout.homescreen_item, null);
+                            LayoutInflater factory = LayoutInflater.from(getActivity());
+                            View myView = factory.inflate(R.layout.homescreen_item, null);
 
-                        ImageView icon = (ImageView) myView.findViewById(R.id.icon);
-                        icon.setImageDrawable(item.getIcon(getActivity()));
+                            ImageView icon = (ImageView) myView.findViewById(R.id.icon);
+                            icon.setImageDrawable(item.getIcon(getActivity()));
 
-                        icon.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(item.getIntent());
-                                startActivity(intent);
-                            }
-                        });
+                            icon.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(item.getIntent());
+                                    startActivity(intent);
+                                }
+                            });
 
-                        TextView appname = (TextView) myView.findViewById(R.id.appname);
-                        appname.setText(item.getAppName());
+
 
                             //DD
-                            appname.setOnLongClickListener(new MyOnLongClickListener());
                             icon.setOnLongClickListener(new MyOnLongClickListener());
                             myView.setOnDragListener(new MyDragListener());
                             //DD
@@ -401,7 +383,6 @@ public void onViewChange(int position)
                             //DD
                             ViewGroup view = (ViewGroup) myView;
                             gridMap_icon.put(view, icon);
-                            gridMap_text.put(view, appname);
                             gridMap_shortcutInfo.put(view, item);
                             //DD
                         }
@@ -448,10 +429,8 @@ public void onViewChange(int position)
             }
 
             //filling up empty extra spaces before adding app drawer
-            if(i < nearestOddColCount)
-            {
-                for(; i < nearestOddColCount; i++)
-                {
+            if (i < nearestOddColCount) {
+                for (; i < nearestOddColCount; i++) {
                     //adding app drawer in the middle
                     if (i + 1 == Math.ceil(nearestOddColCount / 2.0)) {
                         LayoutInflater factory = LayoutInflater.from(getActivity());
@@ -478,9 +457,7 @@ public void onViewChange(int position)
                         params.setGravity(Gravity.CENTER);
                         myView.setLayoutParams(params);
                         gl.addView(myView);
-                    }
-                    else
-                    {
+                    } else {
                         //DD
                         /*Space spacer = new Space(getActivity());
 
@@ -514,7 +491,7 @@ public void onViewChange(int position)
                         icon.setOnLongClickListener(new MyOnLongClickListener());
                         //DD
 
-                       // gl.addView(myView);
+                        // gl.addView(myView);
 
                         //DD
                     }
@@ -523,26 +500,23 @@ public void onViewChange(int position)
         }
     }
 
-    private int getHomeScreenContainersCount()
-    {
-        ArrayList<SecLaunchSubContainer> subContainers =  getContainerManager().getSubContainers();
+    private int getHomeScreenContainersCount() {
+        ArrayList<SecLaunchSubContainer> subContainers = getContainerManager().getSubContainers();
 
-        if(subContainers.size() == 0)
+        if (subContainers.size() == 0)
             return 1;
         else
             return subContainers.size();
     }
 
-    private void customizeViewPager(View rootView)
-    {
+    private void customizeViewPager(View rootView) {
         ViewPager pager = (ViewPager) rootView.findViewById(R.id.viewpager);
 
         pager.setPageTransformer(false, new ViewPager.PageTransformer() {
-            public void transformPage(View page, float position)
-            {
+            public void transformPage(View page, float position) {
                 ViewPager viewPager = (ViewPager) page.getParent();
 
-                if(position == 0)
+                if (position == 0)
                     page.setBackground(null);
                 else
                     page.setBackground(getResources().getDrawable(R.drawable.homescreen_viewpager_border));
@@ -555,17 +529,17 @@ public void onViewChange(int position)
             }
         });
     }
-//DD
-    private final class MyOnLongClickListener implements View.OnLongClickListener{
+
+    //DD
+    private final class MyOnLongClickListener implements View.OnLongClickListener {
         @Override
-        public boolean onLongClick(View view){
+        public boolean onLongClick(View view) {
             ClipData data = ClipData.newPlainText("", "");
-            if(view instanceof ImageView || view instanceof TextView){
+            if (view instanceof ImageView || view instanceof TextView) {
                 ViewGroup viewGroup = (ViewGroup) view.getParent();
                 ViewGroup.DragShadowBuilder shadowBuilder_viewGroup = new ViewGroup.DragShadowBuilder(viewGroup);
                 viewGroup.startDrag(data, shadowBuilder_viewGroup, viewGroup, 0);
-            }
-            else {
+            } else {
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
 
                 view.startDrag(data, shadowBuilder, view, 0);
@@ -580,9 +554,10 @@ public void onViewChange(int position)
         }
 
     }
-private final class MyPagerDragListener implements View.OnDragListener{
+
+    private final class MyPagerDragListener implements View.OnDragListener {
         @Override
-        public boolean onDrag(View view, DragEvent event){
+        public boolean onDrag(View view, DragEvent event) {
             try {
                 switch (event.getAction()) {
                     case DragEvent.ACTION_DRAG_EXITED:
@@ -597,7 +572,6 @@ private final class MyPagerDragListener implements View.OnDragListener{
 
                             int currentPosition = viewPager.getCurrentItem();
                             viewPager.setCurrentItem(currentPosition - 1);
-
                         }
 
                         if (x > 650) {
@@ -616,8 +590,8 @@ private final class MyPagerDragListener implements View.OnDragListener{
                         break;
 
                 }
-            }catch(Exception e){
-                Log.v("Tag", "print: Exception: "+e);
+            } catch (Exception e) {
+                Log.v("Tag", "MyPagerDragListener: onDrag: " + e);
             }
 
             return true;
@@ -625,9 +599,9 @@ private final class MyPagerDragListener implements View.OnDragListener{
 
     }
 
-    private final class MyDragListener implements View.OnDragListener{
+    private final class MyDragListener implements View.OnDragListener {
         @Override
-        public boolean onDrag(View v, DragEvent event){
+        public boolean onDrag(View v, DragEvent event) {
             int action = event.getAction();
             float x;
             float y;
@@ -692,8 +666,7 @@ private final class MyPagerDragListener implements View.OnDragListener{
                                         textView.setText(null);
                                         gridMap_shortcutInfo.put((ViewGroup) view, new ItemInfo());
                                     }
-                                }
-                                else {
+                                } else {
                                     Log.v("Tag", "Test:v: " + v.getTag() + " View: " + view.getTag());
 
                                     ((ViewGroup) v).removeView(((ViewGroup) v).getChildAt(0));
@@ -739,8 +712,8 @@ private final class MyPagerDragListener implements View.OnDragListener{
                     }
                     break;
                 }
-            }catch(Exception e){
-                Log.v("Tag", "print Exception: "+3);
+            } catch (Exception e) {
+                Log.v("Tag", "print Exception: " + 3);
             }
             return true;
         }

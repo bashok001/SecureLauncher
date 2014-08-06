@@ -3,8 +3,8 @@ package com.syr.csrg.seclauncher.ui.fragment;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 
-import com.syr.csrg.seclauncher.ui.activity.ContainerManagementActivity;
 import com.syr.csrg.seclauncher.engine.ContainerManager;
+import com.syr.csrg.seclauncher.ui.activity.ContainerManagementActivity;
 
 /**
  * Created by Shane on 7/31/14.

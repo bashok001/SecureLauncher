@@ -14,10 +14,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.syr.csrg.seclauncher.R;
+import com.syr.csrg.seclauncher.engine.ContainerManager;
 import com.syr.csrg.seclauncher.packDefinitions.LauncherSettings;
 import com.syr.csrg.seclauncher.ui.activity.ContainerManagementActivity;
 import com.syr.csrg.seclauncher.ui.adapter.ContainerManagementViewPagerAdapter;
-import com.syr.csrg.seclauncher.engine.ContainerManager;
 
 
 /**

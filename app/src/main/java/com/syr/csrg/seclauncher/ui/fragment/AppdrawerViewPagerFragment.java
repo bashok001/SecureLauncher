@@ -25,12 +25,10 @@ import java.util.ArrayList;
 /**
  * Created by neethu on 7/24/2014.
  */
-public class AppdrawerViewPagerFragment extends Fragment
-{
+public class AppdrawerViewPagerFragment extends Fragment {
     public static final String APPDRAWER_POSITION = "position";
 
-    public static final AppdrawerViewPagerFragment newInstance(int position)
-    {
+    public static final AppdrawerViewPagerFragment newInstance(int position) {
         AppdrawerViewPagerFragment fragment = new AppdrawerViewPagerFragment();
         Bundle bdl = new Bundle(1);
         bdl.putInt(APPDRAWER_POSITION, position);
@@ -38,16 +36,14 @@ public class AppdrawerViewPagerFragment extends Fragment
         return fragment;
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.homescreen_viewpager_layout, container, false);
         int position = getArguments().getInt(APPDRAWER_POSITION);
 
         ConfigRetrievalAgent configRetrievalAgent = new ConfigRetrievalAgent();
-        ArrayList<SecLaunchSubContainer> subContainers =  configRetrievalAgent.getSubContainersById(LauncherSettings.APP_DRAWER_SC);
+        ArrayList<SecLaunchSubContainer> subContainers = configRetrievalAgent.getSubContainersById(LauncherSettings.APP_DRAWER_SC);
 
-        if(subContainers.size() > 0)
-        {
+        if (subContainers.size() > 0) {
             ArrayList<ItemInfo> subContainerItems = subContainers.get(0).getItems();
 
             GridLayout gl = (GridLayout) rootView.findViewById(R.id.gridContainer);
@@ -62,18 +58,16 @@ public class AppdrawerViewPagerFragment extends Fragment
             float containerHeight = dm.heightPixels;
             int indicatorWidthDP = 90;
             float indicatorWidthPX = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, indicatorWidthDP, getResources().getDisplayMetrics());
-            float viewPagerHeight =  (containerHeight - indicatorWidthPX);
+            float viewPagerHeight = (containerHeight - indicatorWidthPX);
             float pixItemHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 107, getResources().getDisplayMetrics());
-            int rowCount = (int)Math.round(viewPagerHeight/pixItemHeight);
+            int rowCount = (int) Math.round(viewPagerHeight / pixItemHeight);
             gl.setRowCount(rowCount);
             final int itemHeight = (int) viewPagerHeight / rowCount;
 
             int itemsInContainer = rowCount * columnCount;
             int j = (position * itemsInContainer);
-            for (int i = j; i < j + itemsInContainer && i < subContainerItems.size(); i++)
-            {
-                if (subContainerItems.get(i) != null)
-                {
+            for (int i = j; i < j + itemsInContainer && i < subContainerItems.size(); i++) {
+                if (subContainerItems.get(i) != null) {
                     if (subContainerItems.get(i).getItemType() == LauncherSettings.ITEM_TYPE_SHORTCUT) {
                         final ShortcutInfo item = (ShortcutInfo) subContainerItems.get(i);
 
@@ -104,7 +98,6 @@ public class AppdrawerViewPagerFragment extends Fragment
                 }
             }
         }
-
         return rootView;
     }
 }

@@ -17,9 +17,9 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 
 import com.syr.csrg.seclauncher.R;
+import com.syr.csrg.seclauncher.engine.ContainerManager;
 import com.syr.csrg.seclauncher.packDefinitions.SecLaunchSubContainer;
 import com.syr.csrg.seclauncher.ui.activity.ContainerManagementActivity;
-import com.syr.csrg.seclauncher.engine.ContainerManager;
 import com.syr.csrg.seclauncher.ui.customLayout.CustomGridLayout;
 
 import java.util.ArrayList;
@@ -81,7 +81,7 @@ public class ContainerManagementViewPagerFragment extends Fragment {
         int itemsInContainer = rowCount * columnCount;
 
         ArrayList<SecLaunchSubContainer> subContainers = cm.getSubContainers();
-        start = position*7;
+        start = position * 7;
         for (int i = 0; i + start < subContainers.size() && i < 7; i++) {
 
             FrameLayout fragmentHolder = new FrameLayout(getActivity());
@@ -91,10 +91,10 @@ public class ContainerManagementViewPagerFragment extends Fragment {
             fragmentHolder.setLayoutParams(p);
             fragmentHolder.setLongClickable(true);
             fragmentHolder.setBackgroundResource(R.drawable.glass_container);
-            int id = i+start+1;
+            int id = i + start + 1;
             fragmentHolder.setId(id);
             ViewHolder holder = new ViewHolder();
-            holder.subContainerIndex = i+start;
+            holder.subContainerIndex = i + start;
             fragmentHolder.setTag(holder);
             fragmentHolder.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -108,7 +108,7 @@ public class ContainerManagementViewPagerFragment extends Fragment {
             //gl.addView(fragmentHolder);
             gl.addView(fragmentHolder, i);
 
-            Fragment fragment = cm.getSubContainerFragmentPage(i+start);
+            Fragment fragment = cm.getSubContainerFragmentPage(i + start);
 
             if (fragment != null) {
                 getChildFragmentManager().beginTransaction()
@@ -147,7 +147,6 @@ public class ContainerManagementViewPagerFragment extends Fragment {
         public boolean onDrag(final View targetView, DragEvent event) {
 
 
-
             final View sourceView = (View) event.getLocalState();
 
             if (targetView instanceof FrameLayout && sourceView instanceof FrameLayout) {
@@ -180,7 +179,6 @@ public class ContainerManagementViewPagerFragment extends Fragment {
 
                                 owner.removeView(sourceView);
                                 ownerTarget.addView(sourceView, indexTo);
-
 
 
                                 if (sourceView instanceof FrameLayout) {

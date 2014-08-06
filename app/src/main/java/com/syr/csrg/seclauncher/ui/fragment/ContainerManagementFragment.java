@@ -69,7 +69,7 @@ public class ContainerManagementFragment extends Fragment {
             }
         });
 
-        ImageView trashIcon = (ImageView) rootView.findViewById(R.id.trash);
+        ImageView trashIcon = (ImageView) rootView.findViewById(R.id.trashed);
 
         trashIcon.setOnDragListener(new View.OnDragListener() {
 
@@ -81,7 +81,7 @@ public class ContainerManagementFragment extends Fragment {
                     case DragEvent.ACTION_DRAG_STARTED:
                         return true;
                     case DragEvent.ACTION_DRAG_ENTERED:
-                        if (view != null && view.getId() == R.id.trash) {
+                        if (view != null && view.getId() == R.id.trashed) {
                             cm.setIsOverTrash(true);
                             cm.colorDraggedView();
                             view.animate().scaleX(1.5f);
@@ -89,7 +89,7 @@ public class ContainerManagementFragment extends Fragment {
                         }
                         return true;
                     case DragEvent.ACTION_DRAG_EXITED:
-                        if (view != null && view.getId() == R.id.trash) {
+                        if (view != null && view.getId() == R.id.trashed) {
                             cm.setIsOverTrash(false);
                             cm.clearDraggedViewColor();
                             view.animate().scaleX(1.0f);
@@ -98,7 +98,7 @@ public class ContainerManagementFragment extends Fragment {
                         }
                         return true;
                     case DragEvent.ACTION_DROP:
-                        if (view != null && view.getId() == R.id.trash) {
+                        if (view != null && view.getId() == R.id.trashed) {
                             if (owner != null && owner instanceof GridLayout) {
                                 if (owner.getId() == R.id.gridContainer) {
                                     GridLayout gridLayout = (GridLayout) owner;
@@ -113,7 +113,7 @@ public class ContainerManagementFragment extends Fragment {
                     case DragEvent.ACTION_DRAG_LOCATION:
                         return true;
                     case DragEvent.ACTION_DRAG_ENDED:
-                        if (view != null && view.getId() == R.id.trash) {
+                        if (view != null && view.getId() == R.id.trashed) {
                             view.animate().scaleX(1.0f);
                             view.animate().scaleY(1.0f);
                             cm.onDragEnded();

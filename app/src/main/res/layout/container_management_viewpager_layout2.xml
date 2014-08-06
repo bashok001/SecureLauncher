@@ -7,8 +7,6 @@
 
 
 <com.syr.csrg.seclauncher.ui.customLayout.CustomGridLayout
-
-
     android:layout_marginLeft="25dp"
     android:id="@+id/gridContainer"
     android:orientation="horizontal"

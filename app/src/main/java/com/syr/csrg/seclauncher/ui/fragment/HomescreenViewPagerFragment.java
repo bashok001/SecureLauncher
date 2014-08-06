@@ -2,20 +2,25 @@ package com.syr.csrg.seclauncher.ui.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.util.FloatMath;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -45,6 +50,12 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
 {
     public static final String HOMESCREEN_POSITION = "position";
     public static final String HOMESCREEN_CLICKABLE = "homescreen_clickable";
+
+    //DD
+    ImageView mContainer, mTrashIcon, mInfoIcon;
+    ArrayList<ViewGroup> gridList = new ArrayList<ViewGroup>();
+    Dialog dialog;
+    //DD
 
     public static final HomescreenViewPagerFragment newInstance(int position, boolean clickable)
     {
@@ -80,6 +91,13 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
         ArrayList<SecLaunchSubContainer> subContainers = getContainerManager().getSubContainers();
 
         Log.d("size?", Integer.toString(getContainerManager().getNumSubContainers()));
+
+        //DD
+        mTrashIcon = (ImageView) getActivity().findViewById(R.id.trash);
+        mContainer = (ImageView) getActivity().findViewById(R.id.container);
+        mInfoIcon = (ImageView) getActivity().findViewById(R.id.information);
+        //DD
+
             if(subContainers.size() > 0)
             {
                 final ArrayList<ItemInfo> subContainerItems = subContainers.get(Math.min(position, getContainerManager().getNumSubContainers() - 1)).getItems();
@@ -253,6 +271,12 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
 
                             LayoutInflater factory = LayoutInflater.from(getActivity());
                             View myView = factory.inflate(R.layout.homescreen_item, null);
+                            
+                            //DD
+                            myView.setOnLongClickListener(new MyOnLongClickListener());
+                            myView.setOnDragListener(new MyDragListener());
+                            //DD
+                            
                             gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_SHORTCUT;
                             gridItemViewHolder.itemInfo = item;
                             gridItemPosition++;
@@ -273,9 +297,17 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                                 });
 
                             }
+                            
+                            //DD
+                            icon.setOnLongClickListener(new MyOnLongClickListener());
+                            //DD
 
                             TextView appname = (TextView) myView.findViewById(R.id.appname);
                             appname.setText(item.getAppName());
+
+                            //DD
+                            appname.setOnLongClickListener(new MyOnLongClickListener());
+                            //DD
 
                             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                             if (!clickable) {
@@ -292,11 +324,23 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                             if (!clickable) {
                                 myView.animate().scaleX(0.75f).scaleY(0.75f).start();
                             }
+
+                            //DD
+                            ViewGroup viewGroup = (ViewGroup) myView;
+                            gridList.add(viewGroup);
+                            Object lock = new Object();
+                            synchronized (lock) {
+                                HomescreenFragment.gridMap_icon.put(viewGroup, icon);
+                                HomescreenFragment.gridMap_text.put(viewGroup, appname);
+                                HomescreenFragment.gridMap_shortcutInfo.put(viewGroup, item);//
+                            }
+                            //DD
+
                         }
 
                         else if (subContainerItems.get(i).getItemType() == LauncherSettings.ITEM_TYPE_FOLDER)
                         {
-                                                       LayoutInflater factory = LayoutInflater.from(getActivity());
+                            LayoutInflater factory = LayoutInflater.from(getActivity());
                             View myView;
 
                             final FolderInfo item = (FolderInfo) subContainerItems.get(i);
@@ -304,6 +348,11 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
 
                             final int noofitems = appsInFolder.size();
                             myView = factory.inflate(R.layout.homescreen_item, null);
+                            
+                            //DD
+                             myView.setOnDragListener(new MyDragListener());
+                             //DD
+                            
                             ImageView icon = (ImageView) myView.findViewById(R.id.icon);
 
                             gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_FOLDER;
@@ -446,6 +495,11 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                                                 folderItemParams.height = itemHeight;
                                                 folderItemView.setLayoutParams(folderItemParams);
                                                 gridLayoutFolder.addView(folderItemView);
+
+                                                //DD
+                                                icon.setOnLongClickListener(new MyOnLongClickListenerForDialog());//
+                                                icon.setOnDragListener(new MyDragListener());
+                                                //DD
                                             }
                                         }
 
@@ -454,13 +508,28 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                                 });
 
                             }
-
                             gl.addView(myView);
+                            
+                            //DD
+                            ViewGroup viewGroup = (ViewGroup) myView;
+                            gridList.add(viewGroup);
+                            //gridMap.put(viewGroup, icon);
+                            icon.setOnLongClickListener(new MyOnLongClickListener());
+
+                            //My code
+                            myView.setTag("folder");
+                            Object lock2 = new Object();
+                            synchronized (lock2) {
+                                HomescreenFragment.gridMap_icon.put(viewGroup, icon);
+                                HomescreenFragment.gridMap_text.put(viewGroup, appname);
+                                HomescreenFragment.gridMap_shortcutInfo.put(viewGroup, item);//
+                            }
+                            //DD
                         }
                     }
                     else
                     {
-                        Space spacer = new Space(getActivity());
+                       /* Space spacer = new Space(getActivity());
 
                         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                         params.width = itemWidth;
@@ -473,21 +542,73 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                         gridItemViewHolder.itemPosition = gridItemPosition;
                         spacer.setTag(gridItemViewHolder);
 
-                        gl.addView(spacer);
+                        gl.addView(spacer);*/
+                        LayoutInflater factory = LayoutInflater.from(getActivity());
+                        View myView = factory.inflate(R.layout.homescreen_item, null);
+                        ImageView icon = (ImageView) myView.findViewById(R.id.icon);
+                        icon.setImageDrawable(null);
+                        TextView appname = (TextView) myView.findViewById(R.id.appname);
+                        appname.setText(null);
+                        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                        params.width = itemWidth;
+                        params.height = itemHeight;
+                        params.setGravity(Gravity.CENTER);
+                        myView.setLayoutParams(params);
+                        gl.addView(myView);
+                        //DD
+                        ViewGroup viewGroup = (ViewGroup) myView;
+                        gridList.add(viewGroup);
+                        Object lock3 = new Object();
+                        synchronized (lock3) {
+                            HomescreenFragment.gridMap_icon.put(viewGroup, icon);
+                            HomescreenFragment.gridMap_text.put(viewGroup, appname);
+                            HomescreenFragment.gridMap_shortcutInfo.put(viewGroup, new ItemInfo());
+                        }
+                        myView.setOnDragListener(new MyDragListener());
+                        icon.setOnLongClickListener(new MyOnLongClickListener());
+                        icon.setOnLongClickListener(new MyOnLongClickListener());
+                        //DD
                     }
                 }
 				if( i < totalGriditems)
                 {
                     for (; i < totalGriditems; i++)
                     {
-                        Space spacer = new Space(getActivity());
+                        /*Space spacer = new Space(getActivity());
 
                         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                         params.width = itemWidth;
                         params.height = itemHeight;
                         params.setGravity(Gravity.CENTER);
                         spacer.setLayoutParams(params);
-                        gl.addView(spacer);
+                        gl.addView(spacer);*/
+
+
+                        //DD
+                        LayoutInflater factory = LayoutInflater.from(getActivity());
+                        View myView = factory.inflate(R.layout.homescreen_item, null);
+                        ImageView icon = (ImageView) myView.findViewById(R.id.icon);
+                        icon.setImageDrawable(null);
+                        TextView appname = (TextView) myView.findViewById(R.id.appname);
+                        appname.setText(null);
+                        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+                        params.width = itemWidth;
+                        params.height = itemHeight;
+                        params.setGravity(Gravity.CENTER);
+                        myView.setLayoutParams(params);
+                        gl.addView(myView);
+                        ViewGroup viewGroup = (ViewGroup) myView;
+                        gridList.add(viewGroup);
+                        Object lock4 = new Object();
+                        synchronized (lock4) {
+                            HomescreenFragment.gridMap_icon.put(viewGroup, icon);
+                            HomescreenFragment.gridMap_text.put(viewGroup, appname);
+                            HomescreenFragment.gridMap_shortcutInfo.put(viewGroup, new ItemInfo());
+                        }
+                        myView.setOnDragListener(new MyDragListener());
+                        icon.setOnLongClickListener(new MyOnLongClickListener());
+                        i++;
+                        //DD
                     }
                 }
                 if (clickable) {
@@ -725,6 +846,337 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
         return colorChoserView;
     }
 
+    private final class MyOnLongClickListenerForDialog implements  View.OnLongClickListener{
+
+        @Override
+        public boolean onLongClick(View view) {
+
+            ClipData data = ClipData.newPlainText("", "");
+
+            if(view instanceof ImageView || view instanceof TextView){
+                ViewGroup viewGroup = (ViewGroup) view.getParent();
+                //View view_group = (View) viewGroup;
+                //ClipData data1 = ClipData.newPlainText("", "");
+                ViewGroup.DragShadowBuilder shadowBuilder_viewGroup = new ViewGroup.DragShadowBuilder(viewGroup);
+                viewGroup.startDrag(data, shadowBuilder_viewGroup, viewGroup, 0);
+                viewGroup.setVisibility(ViewGroup.INVISIBLE);
+            }
+            //else if(view instanceof TextView)
+            else {
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+
+                view.startDrag(data, shadowBuilder, view, 0);
+                view.setVisibility(View.INVISIBLE);
+            }
+            ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+
+            viewPager.animate().setDuration(500);
+            //viewPager.animate().rotationYBy(720);
+            viewPager.animate().scaleX(0.8F).scaleY(0.8F);
+            //dialog.dismiss();
+            dialog.hide();
+            return true;
+        }
+    }
+
+    private final class MyOnLongClickListener implements View.OnLongClickListener{
+        @Override
+        public boolean onLongClick(View view){
+
+        try {
+                mTrashIcon.setVisibility(View.VISIBLE);
+                mContainer.setVisibility(View.VISIBLE);
+                mInfoIcon.setVisibility(View.VISIBLE);
+
+                ClipData data = ClipData.newPlainText("", "");
+
+                if (view instanceof ImageView || view instanceof TextView) {
+                    Log.v("Tag", "first one");
+                    if (view instanceof ImageView) {
+                        if (((ImageView) view).getDrawable() == null)
+                            return true;
+                    }
+                    if (view instanceof TextView) {
+                        if (((TextView) view).getText() == null) {
+                            return true;
+                        }
+                    }
+                    final ViewGroup viewGroup = (ViewGroup) view.getParent();
+                    ViewGroup.DragShadowBuilder shadowBuilder_viewGroup = new ViewGroup.DragShadowBuilder(viewGroup);
+                    viewGroup.startDrag(data, shadowBuilder_viewGroup, viewGroup, 0);
+                }
+
+                else {
+                    Log.v("Tag", "second one");
+
+                    View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                    view.startDrag(data, shadowBuilder, view, 0);
+                }
+                ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+                viewPager.animate().setDuration(500);
+                viewPager.animate().scaleX(0.8F).scaleY(0.8F);
+            }catch(Exception e){
+                Log.v("Tag", "print: Exception: "+e);
+            }
+            return true;
+        }
+
+    }
+
+    private final class MyPagerDragListener implements View.OnDragListener{
+        @Override
+        public boolean onDrag(View view, DragEvent event){
+
+            try {
+                switch (event.getAction()) {
+                    case DragEvent.ACTION_DRAG_EXITED:
+
+                        Float a = event.getX();
+                        //Log.v("Tag LayoutListener X ", a.toString());
+                        Float b = event.getY();
+                        //Log.v("Tag LayoutListener Y ", b.toString());
+
+                        float x = event.getX();
+                        if (x < 80) {
+
+                            ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+
+                            int currentPosition = viewPager.getCurrentItem();
+                            viewPager.setCurrentItem(currentPosition - 1);
+
+                        }
+
+                        if (x > 650) {
+                            ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+
+                            int currentPosition = viewPager.getCurrentItem();
+                            viewPager.setCurrentItem(currentPosition + 1);
+                        }
+
+                        // }
+                        break;
+
+                    case DragEvent.ACTION_DROP:
+                        try {
+
+                            Log.v("Tag", "Important: This is from Pager drop");
+
+                            ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+                            viewPager.animate().setDuration(500);
+                            viewPager.animate().scaleX(1.0F).scaleY(1.0F);
+                        } catch (Exception e) {
+                            Log.v("Tag", "print Exception: " + e);
+                        }
+
+                        break;
+
+
+
+                }
+            }catch(Exception e){
+                Log.v("Tag", "print: Exception: "+e);
+            }
+
+            return true;
+        }
+
+    }
+
+    private final class MyDragListener implements View.OnDragListener{
+        @Override
+        public boolean onDrag(View v, DragEvent event){
+            int action = event.getAction();
+            float x;
+            float y;
+            final View v1 = v;
+
+            try {
+                switch (event.getAction()) {
+
+                    case DragEvent.ACTION_DRAG_STARTED:
+                        Log.v("Tag", "I am in DRAG_started!!!");
+                        break;
+
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        try {
+                            Log.v("Tag", "event: DRAG_ENDED");
+                            if (v instanceof ViewGroup) {
+                                View view = (ViewGroup) event.getLocalState();
+                                //Modify
+                                //view.setVisibility(View.VISIBLE);
+
+                                //v.setVisibility(View.VISIBLE);
+                                ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+                                viewPager.animate().setDuration(500);
+                                viewPager.animate().scaleX(1.0F).scaleY(1.0F);
+                            }
+                            break;
+                        } catch (Exception e) {
+                            Log.v("Tag", "print Exception: " + e);
+                        }
+
+                    case DragEvent.ACTION_DRAG_ENTERED:
+                        Log.v("Tag", "*********I am in DRAG_ENTERED!!!");
+                        if (v instanceof ViewGroup) {
+                            Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_shake);
+                            v.startAnimation(shake);
+                        }
+                        break;
+
+                    case DragEvent.ACTION_DRAG_EXITED:
+                        if (v instanceof ViewGroup) {
+                            try {
+                                Log.v("Tag", "Action Exited!!!!");
+                                v.clearAnimation();
+
+                                //v.setVisibility(View.VISIBLE);
+                            } catch (Exception e) {
+                                Log.v("Tag", "print Exception: " + e);
+                            }
+                        }
+                        break;
+
+                    case DragEvent.ACTION_DROP: {
+                        try {
+                            Log.v("Tag", "Action drop!!!!");
+                            if (v instanceof ViewGroup) {
+                                ViewGroup owner_target = (ViewGroup) v.getParent();
+                                View view = (ViewGroup) event.getLocalState();
+                                if (view instanceof ViewGroup) {
+
+                                    if (v == view) {
+                                        v.setVisibility(View.VISIBLE);
+                                        view.clearAnimation();
+                                        v.clearAnimation();
+                                        view.setVisibility(View.VISIBLE);
+                                        Log.v("Tag", "inner loop Action drop!!!!");
+                                        return true;
+                                    }
+
+                                    if (v.getTag() == "folder" && view.getTag() != "folder") {
+                                        Log.v("Tag", "Test We are taking care folder!");
+
+                                        Object lock5 = new Object();
+                                        synchronized (lock5) {
+                                            FolderInfo fold = (FolderInfo) HomescreenFragment.gridMap_shortcutInfo.get(v);
+                                            ShortcutInfo item = (ShortcutInfo) HomescreenFragment.gridMap_shortcutInfo.get(view);
+                                            fold.add(item);
+                                        }
+                                        //fold.add(item);
+                                        view.clearAnimation();
+                                        v.clearAnimation();
+                                        Object lock = new Object();
+                                        synchronized (lock) {
+                                            ImageView imageView = (ImageView) HomescreenFragment.gridMap_icon.get(view);
+                                            TextView textView = (TextView) HomescreenFragment.gridMap_text.get(view);
+                                            imageView.setOnClickListener(null);
+                                            imageView.setImageBitmap(null);
+                                            textView.setText(null);
+                                            HomescreenFragment.gridMap_shortcutInfo.put((ViewGroup) view, new ItemInfo());
+                                        }
+                                    }
+                                    //ViewGroup owner = (ViewGroup) view.getParent();
+                                    //int index_origin = owner.indexOfChild(view);
+                                    //int index_target = owner_target.indexOfChild(v);
+                            /*Solution One~~~~~~just swap the ImageView and TextView*/
+                                    //ImageView imageView_origin = (ImageView) ((ViewGroup) view).getChildAt(0);
+                                    //ImageView imageView_origin = gridMap.get(view);
+                                    //TextView textView_origin = (TextView) ((ViewGroup) view).getChildAt(1);
+
+                                    //ImageView imageView_target = (ImageView) ((ViewGroup) v).getChildAt(0);
+                                    //ImageView imageView_target = gridMap.get(v);
+                                    //TextView textView_target = (TextView) ((ViewGroup) v).getChildAt(1);
+
+                                    //Drawable temp_icon = imageView_origin.getDrawable();
+                                    //String temp_text = textView_origin.getText().toString();
+
+                                    //imageView_origin.setImageDrawable(imageView_target.getDrawable());
+
+                                    //textView_origin.setText(textView_target.getText());
+
+                                    //imageView_target.setImageDrawable(temp_icon);
+                                    //textView_target.setText(temp_text);
+                                    else {
+
+                                        Log.v("Tag", "Test:v: " + v.getTag() + " View: " + view.getTag());
+                                        //TextView textView_origin = (TextView) ((ViewGroup) view).getChildAt(1);
+                                        //TextView textView_target = (TextView) ((ViewGroup) v).getChildAt(1);
+                                        //String temp_text = textView_origin.getText().toString();
+                                        //textView_origin.setText(textView_target.getText());
+                                        //textView_target.setText(temp_text);
+
+                                        //((ViewGroup) v).addView(HomescreenActivity.gridMap_text.get(view), 1);
+                                        //((ViewGroup) view).addView(HomescreenActivity.gridMap_text.get(v), 1);
+                                        //((ViewGroup) v).addView(HomescreenActivity.gridMap_icon.get(view), 0);
+                                        //((ViewGroup) view).addView(HomescreenActivity.gridMap_icon.get(v), 0);
+
+                                        ((ViewGroup) v).removeView(((ViewGroup) v).getChildAt(0));
+                                        ((ViewGroup) view).removeView(((ViewGroup) view).getChildAt(0));
+
+                                        ((ViewGroup) v).removeView(((ViewGroup) v).getChildAt(0));
+                                        ((ViewGroup) view).removeView(((ViewGroup) view).getChildAt(0));
+
+                                        Object lock6 = new Object();
+                                        //synchronized (lock6) {
+                                        View view_fromV = HomescreenFragment.gridMap_icon.get(v);
+                                        View view_fromView = HomescreenFragment.gridMap_icon.get(view);
+
+                                        View text_fromV = HomescreenFragment.gridMap_text.get(v);
+                                        View text_fromView = HomescreenFragment.gridMap_text.get(view);
+
+                                        ItemInfo itemInfo_fromV = HomescreenFragment.gridMap_shortcutInfo.get(v);
+                                        ItemInfo itemInfo_fromView = HomescreenFragment.gridMap_shortcutInfo.get(view);
+
+                                        ((ViewGroup) v).addView(view_fromView, 0);
+                                        ((ViewGroup) view).addView(view_fromV, 0);
+
+                                        ((ViewGroup) v).addView(text_fromView, 1);
+                                        ((ViewGroup) view).addView(text_fromV, 1);
+
+
+                                        //View temp = view_fromV;
+                                        //view_fromV = view_fromView;
+                                        //view_fromView = temp;
+                                        HomescreenFragment.gridMap_icon.put((ViewGroup) v, view_fromView);
+                                        HomescreenFragment.gridMap_icon.put((ViewGroup) view, view_fromV);
+
+                                        HomescreenFragment.gridMap_text.put((ViewGroup) v, text_fromView);
+                                        HomescreenFragment.gridMap_text.put((ViewGroup) view, text_fromV);
+
+                                        HomescreenFragment.gridMap_shortcutInfo.put((ViewGroup) v, itemInfo_fromView);
+                                        HomescreenFragment.gridMap_shortcutInfo.put((ViewGroup) view, itemInfo_fromV);
+                                        // }
+
+                                        Log.v("Tag", "Test Quick Access Panel outer!");
+                                        if (view.getTag() == "folder" && v.getTag() != "folder") {
+                                            Log.v("Tag", "Test Quick Access Panel!");
+                                            v.setTag("folder");
+                                            view.setTag(null);
+                                        }
+                                    }
+
+                                    //Modify
+                                    //view.setVisibility(View.VISIBLE);
+                                    view.clearAnimation();
+                                    v.clearAnimation();
+                                    //view.setVisibility(View.VISIBLE);
+                                    //v.setVisibility(View.VISIBLE);
+                                }
+                            break;
+                            }
+                        } catch (Exception e) {
+                            Log.v("Tag", "print Exception: " + e);
+                        }
+                    }
+
+                }
+            }catch(Exception e){
+                Log.v("Tag", "print: Exception: "+e);
+            }
+            return true;
+        }
+    }
+    
     public interface onViewChangeListener {
         public void onViewChange(int position);
         public void onPageChange();

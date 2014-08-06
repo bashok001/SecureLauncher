@@ -433,7 +433,7 @@ public class ContainerManager
         if (subContainerPager != null) {
             activity.getSupportFragmentManager().beginTransaction()
                     .replace(fragmentId, ContainerManagementFragment.newInstance(getSubContainerPage()))
-                    
+
                     .commit();
         }
     }

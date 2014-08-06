@@ -9,8 +9,8 @@
     tools:context="com.syr.csrg.seclauncher.ui.fragment.ContainerManagementFragment">
 
     <ImageView
-        android:id="@+id/trash"
-        android:src="@drawable/trash"
+        android:id="@+id/trashed"
+        android:src="@drawable/trashed"
         android:visibility="invisible"
         android:layout_weight="4"
         android:scaleType="fitCenter"

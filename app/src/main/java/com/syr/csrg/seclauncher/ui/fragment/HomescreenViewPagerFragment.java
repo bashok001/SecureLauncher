@@ -631,25 +631,19 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                             int action = motionEvent.getAction();
                             switch (action & MotionEvent.ACTION_MASK) {
                                 case MotionEvent.ACTION_DOWN:
-                                    Log.d("onTouch", "ACTION_DOWN");
                                     touchState = TOUCH;
                                     break;
                                 case MotionEvent.ACTION_POINTER_DOWN:
-                                    Log.d("onTouch", "ACTION_POINTER_DOWN");
                                     touchState = PINCH;
                                     distx = motionEvent.getX(0) - motionEvent.getX(1);
                                     disty = motionEvent.getY(0) - motionEvent.getY(1);
                                     distStart = FloatMath.sqrt(distx * distx + disty * disty);
                                     break;
                                 case MotionEvent.ACTION_MOVE:
-                                    Log.d("onTouch", "ACTION_MOVE");
                                     if (touchState == PINCH) {
-                                        Log.d("onTouch", "PINCH");
                                         distx = motionEvent.getX(0) - motionEvent.getX(1);
                                         disty = motionEvent.getY(0) - motionEvent.getY(1);
                                         distCurrent = FloatMath.sqrt(distx * distx + disty * disty);
-                                        Log.d("distStart", Float.toString(distStart));
-                                        Log.d("distCurrent", Float.toString(distCurrent));
                                         final float diff = distCurrent - distStart;
                                         if (diff < -20) {
                                             getContainerManager().onZoomOut();
@@ -659,11 +653,9 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                                     }
                                     break;
                                 case MotionEvent.ACTION_UP:
-                                    Log.d("onTouch", "ACTION_UP");
                                     touchState = IDLE;
                                     break;
                                 case MotionEvent.ACTION_POINTER_UP:
-                                    Log.d("onTouch", "ACTION_POINTER_UP");
                                     touchState = TOUCH;
                                     break;
                             }
@@ -871,9 +863,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
             ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
 
             viewPager.animate().setDuration(500);
-            //viewPager.animate().rotationYBy(720);
             viewPager.animate().scaleX(0.8F).scaleY(0.8F);
-            //dialog.dismiss();
             dialog.hide();
             return true;
         }
@@ -907,7 +897,6 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                 }
 
                 else {
-                    Log.v("Tag", "second one");
 
                     View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                     view.startDrag(data, shadowBuilder, view, 0);
@@ -932,9 +921,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                     case DragEvent.ACTION_DRAG_EXITED:
 
                         Float a = event.getX();
-                        //Log.v("Tag LayoutListener X ", a.toString());
                         Float b = event.getY();
-                        //Log.v("Tag LayoutListener Y ", b.toString());
 
                         float x = event.getX();
                         if (x < 80) {
@@ -953,25 +940,17 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                             viewPager.setCurrentItem(currentPosition + 1);
                         }
 
-                        // }
                         break;
 
                     case DragEvent.ACTION_DROP:
                         try {
-
-                            Log.v("Tag", "Important: This is from Pager drop");
-
                             ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
                             viewPager.animate().setDuration(500);
                             viewPager.animate().scaleX(1.0F).scaleY(1.0F);
                         } catch (Exception e) {
                             Log.v("Tag", "print Exception: " + e);
                         }
-
                         break;
-
-
-
                 }
             }catch(Exception e){
                 Log.v("Tag", "print: Exception: "+e);
@@ -994,18 +973,12 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                 switch (event.getAction()) {
 
                     case DragEvent.ACTION_DRAG_STARTED:
-                        Log.v("Tag", "I am in DRAG_started!!!");
                         break;
 
                     case DragEvent.ACTION_DRAG_ENDED:
                         try {
-                            Log.v("Tag", "event: DRAG_ENDED");
                             if (v instanceof ViewGroup) {
                                 View view = (ViewGroup) event.getLocalState();
-                                //Modify
-                                //view.setVisibility(View.VISIBLE);
-
-                                //v.setVisibility(View.VISIBLE);
                                 ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
                                 viewPager.animate().setDuration(500);
                                 viewPager.animate().scaleX(1.0F).scaleY(1.0F);
@@ -1016,7 +989,6 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                         }
 
                     case DragEvent.ACTION_DRAG_ENTERED:
-                        Log.v("Tag", "*********I am in DRAG_ENTERED!!!");
                         if (v instanceof ViewGroup) {
                             Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_shake);
                             v.startAnimation(shake);
@@ -1026,10 +998,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                     case DragEvent.ACTION_DRAG_EXITED:
                         if (v instanceof ViewGroup) {
                             try {
-                                Log.v("Tag", "Action Exited!!!!");
                                 v.clearAnimation();
-
-                                //v.setVisibility(View.VISIBLE);
                             } catch (Exception e) {
                                 Log.v("Tag", "print Exception: " + e);
                             }
@@ -1038,7 +1007,6 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
 
                     case DragEvent.ACTION_DROP: {
                         try {
-                            Log.v("Tag", "Action drop!!!!");
                             if (v instanceof ViewGroup) {
                                 ViewGroup owner_target = (ViewGroup) v.getParent();
                                 View view = (ViewGroup) event.getLocalState();
@@ -1049,7 +1017,6 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                                         view.clearAnimation();
                                         v.clearAnimation();
                                         view.setVisibility(View.VISIBLE);
-                                        Log.v("Tag", "inner loop Action drop!!!!");
                                         return true;
                                     }
 
@@ -1075,49 +1042,14 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                                             HomescreenFragment.gridMap_shortcutInfo.put((ViewGroup) view, new ItemInfo());
                                         }
                                     }
-                                    //ViewGroup owner = (ViewGroup) view.getParent();
-                                    //int index_origin = owner.indexOfChild(view);
-                                    //int index_target = owner_target.indexOfChild(v);
-                            /*Solution One~~~~~~just swap the ImageView and TextView*/
-                                    //ImageView imageView_origin = (ImageView) ((ViewGroup) view).getChildAt(0);
-                                    //ImageView imageView_origin = gridMap.get(view);
-                                    //TextView textView_origin = (TextView) ((ViewGroup) view).getChildAt(1);
-
-                                    //ImageView imageView_target = (ImageView) ((ViewGroup) v).getChildAt(0);
-                                    //ImageView imageView_target = gridMap.get(v);
-                                    //TextView textView_target = (TextView) ((ViewGroup) v).getChildAt(1);
-
-                                    //Drawable temp_icon = imageView_origin.getDrawable();
-                                    //String temp_text = textView_origin.getText().toString();
-
-                                    //imageView_origin.setImageDrawable(imageView_target.getDrawable());
-
-                                    //textView_origin.setText(textView_target.getText());
-
-                                    //imageView_target.setImageDrawable(temp_icon);
-                                    //textView_target.setText(temp_text);
                                     else {
 
-                                        Log.v("Tag", "Test:v: " + v.getTag() + " View: " + view.getTag());
-                                        //TextView textView_origin = (TextView) ((ViewGroup) view).getChildAt(1);
-                                        //TextView textView_target = (TextView) ((ViewGroup) v).getChildAt(1);
-                                        //String temp_text = textView_origin.getText().toString();
-                                        //textView_origin.setText(textView_target.getText());
-                                        //textView_target.setText(temp_text);
-
-                                        //((ViewGroup) v).addView(HomescreenActivity.gridMap_text.get(view), 1);
-                                        //((ViewGroup) view).addView(HomescreenActivity.gridMap_text.get(v), 1);
-                                        //((ViewGroup) v).addView(HomescreenActivity.gridMap_icon.get(view), 0);
-                                        //((ViewGroup) view).addView(HomescreenActivity.gridMap_icon.get(v), 0);
-
                                         ((ViewGroup) v).removeView(((ViewGroup) v).getChildAt(0));
                                         ((ViewGroup) view).removeView(((ViewGroup) view).getChildAt(0));
 
                                         ((ViewGroup) v).removeView(((ViewGroup) v).getChildAt(0));
                                         ((ViewGroup) view).removeView(((ViewGroup) view).getChildAt(0));
 
-                                        Object lock6 = new Object();
-                                        //synchronized (lock6) {
                                         View view_fromV = HomescreenFragment.gridMap_icon.get(v);
                                         View view_fromView = HomescreenFragment.gridMap_icon.get(view);
 
@@ -1134,9 +1066,6 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
                                         ((ViewGroup) view).addView(text_fromV, 1);
 
 
-                                        //View temp = view_fromV;
-                                        //view_fromV = view_fromView;
-                                        //view_fromView = temp;
                                         HomescreenFragment.gridMap_icon.put((ViewGroup) v, view_fromView);
                                         HomescreenFragment.gridMap_icon.put((ViewGroup) view, view_fromV);
 
@@ -1145,22 +1074,14 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
 
                                         HomescreenFragment.gridMap_shortcutInfo.put((ViewGroup) v, itemInfo_fromView);
                                         HomescreenFragment.gridMap_shortcutInfo.put((ViewGroup) view, itemInfo_fromV);
-                                        // }
 
-                                        Log.v("Tag", "Test Quick Access Panel outer!");
                                         if (view.getTag() == "folder" && v.getTag() != "folder") {
-                                            Log.v("Tag", "Test Quick Access Panel!");
                                             v.setTag("folder");
                                             view.setTag(null);
                                         }
                                     }
-
-                                    //Modify
-                                    //view.setVisibility(View.VISIBLE);
                                     view.clearAnimation();
                                     v.clearAnimation();
-                                    //view.setVisibility(View.VISIBLE);
-                                    //v.setVisibility(View.VISIBLE);
                                 }
                             break;
                             }

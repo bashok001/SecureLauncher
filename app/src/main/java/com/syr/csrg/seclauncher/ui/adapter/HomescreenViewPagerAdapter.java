@@ -6,24 +6,27 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.syr.csrg.seclauncher.ui.fragment.HomescreenViewPagerFragment;
 
-
-
 /**
  * Created by neethu on 7/9/2014.
  */
-public class HomescreenViewPagerAdapter extends FragmentStatePagerAdapter
+public class HomescreenViewPagerAdapter extends SubContainerViewPagerAdapter
 {
     int count;
 
     public HomescreenViewPagerAdapter(FragmentManager fm, int size)
     {
-        super(fm);
+        super(fm, size);
         count = size;
     }
 
     public Fragment getItem(int position)
     {
-        return HomescreenViewPagerFragment.newInstance(position);
+        return HomescreenViewPagerFragment.newInstance(position, true);
+    }
+
+    public Fragment getUnclickableItem(int position)
+    {
+        return HomescreenViewPagerFragment.newInstance(position, false);
     }
 
     public int getCount()

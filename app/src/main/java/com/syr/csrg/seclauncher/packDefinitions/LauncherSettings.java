@@ -48,5 +48,6 @@ public class LauncherSettings {
     public static final int APP_DRAWER_SC = 3;
     public static final int FOLDER_SC = 4;
 
+    public static final int CONTAINERS_PER_PAGE = 7;
 
 }

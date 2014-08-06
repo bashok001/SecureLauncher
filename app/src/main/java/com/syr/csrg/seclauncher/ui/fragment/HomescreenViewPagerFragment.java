@@ -2,29 +2,26 @@ package com.syr.csrg.seclauncher.ui.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
+import android.util.FloatMath;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.ScrollView;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,21 +33,25 @@ import com.syr.csrg.seclauncher.packDefinitions.ItemInfo;
 import com.syr.csrg.seclauncher.packDefinitions.LauncherSettings;
 import com.syr.csrg.seclauncher.packDefinitions.SecLaunchSubContainer;
 import com.syr.csrg.seclauncher.packDefinitions.ShortcutInfo;
+import com.syr.csrg.seclauncher.ui.activity.HomescreenActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by neethu on 7/23/2014.
  */
-public class HomescreenViewPagerFragment extends Fragment
+public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment
 {
     public static final String HOMESCREEN_POSITION = "position";
+    public static final String HOMESCREEN_CLICKABLE = "homescreen_clickable";
 
-    public static final HomescreenViewPagerFragment newInstance(int position)
+    public static final HomescreenViewPagerFragment newInstance(int position, boolean clickable)
     {
         HomescreenViewPagerFragment fragment = new HomescreenViewPagerFragment();
-        Bundle bdl = new Bundle(1);
+        Bundle bdl = new Bundle(2);
         bdl.putInt(HOMESCREEN_POSITION, position);
+        bdl.putBoolean(HOMESCREEN_CLICKABLE, clickable);
         fragment.setArguments(bdl);
         return fragment;
     }
@@ -61,7 +62,7 @@ public class HomescreenViewPagerFragment extends Fragment
 
         try
         {
-            viewChangeCallback = (onViewChangeListener) activity;
+            viewChangeCallback = (onViewChangeListener) ((HomescreenActivity)activity).homescreenFragment;
         }
         catch (ClassCastException e)
         {
@@ -69,22 +70,23 @@ public class HomescreenViewPagerFragment extends Fragment
         }
     }
 
+
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.homescreen_viewpager_layout, container, false);
         final int position = getArguments().getInt(HOMESCREEN_POSITION);
+        final boolean clickable = getArguments().getBoolean(HOMESCREEN_CLICKABLE);
 
-        ConfigRetrievalAgent configRetrievalAgent = new ConfigRetrievalAgent();
-        ArrayList<SecLaunchSubContainer> subContainers =  configRetrievalAgent.getSubContainersById(LauncherSettings.HOME_SCREEN_SC);
+        ArrayList<SecLaunchSubContainer> subContainers = getContainerManager().getSubContainers();
 
+        Log.d("size?", Integer.toString(getContainerManager().getNumSubContainers()));
             if(subContainers.size() > 0)
             {
-                final ArrayList<ItemInfo> subContainerItems = subContainers.get(position).getItems();
+                final ArrayList<ItemInfo> subContainerItems = subContainers.get(Math.min(position, getContainerManager().getNumSubContainers() - 1)).getItems();
 
                 final GridLayout gl = (GridLayout)rootView.findViewById(R.id.gridContainer);
-                gl.setLongClickable(true);
 
-                DisplayMetrics dm = new DisplayMetrics();
+				DisplayMetrics dm = new DisplayMetrics();
                 getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
                 float containerWidth = dm.widthPixels;
                 float pixItemWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 88, getResources().getDisplayMetrics());
@@ -104,58 +106,60 @@ public class HomescreenViewPagerFragment extends Fragment
                 int i;
                 int gridItemPosition = -1;
 
-                gl.setOnLongClickListener(new View.OnLongClickListener() {
-                    public boolean onLongClick(View arg0) {
-                        View dialogMenuView = getActivity().getLayoutInflater().inflate(R.layout.homescreen_contextual_dialog, null);
-                        final Dialog dialogMenu = new Dialog(getActivity(), R.style.FullHeightDialog);
-                        dialogMenu.getWindow().getAttributes().windowAnimations = R.style.HomeScreenMenuAnimation;
-                        dialogMenu.setContentView(dialogMenuView);
-                        dialogMenu.setCancelable(true);
+                if (clickable) {
 
-                        TextView setWallpaper = (TextView) dialogMenuView.findViewById(R.id.setWallpaperTxt);
-                        setWallpaper.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialogMenu.dismiss();
+                    gl.setLongClickable(true);
 
-                                Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER);
-                                startActivity(Intent.createChooser(intent, "Select Wallpaper"));
-                            }
-                        });
+                    gl.setOnLongClickListener(new View.OnLongClickListener() {
+                        public boolean onLongClick(View arg0) {
+                            View dialogMenuView = getActivity().getLayoutInflater().inflate(R.layout.homescreen_contextual_dialog, null);
+                            final Dialog dialogMenu = new Dialog(getActivity(), R.style.FullHeightDialog);
+							dialogMenu.getWindow().getAttributes().windowAnimations = R.style.HomeScreenMenuAnimation;
+                            dialogMenu.setContentView(dialogMenuView);
+                            dialogMenu.setCancelable(true);
 
-                        TextView appsAndWidgets = (TextView) dialogMenuView.findViewById(R.id.appsAndWidgetsTxt);
-                        appsAndWidgets.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialogMenu.dismiss();
+                            TextView setWallpaper = (TextView) dialogMenuView.findViewById(R.id.setWallpaperTxt);
+                            setWallpaper.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialogMenu.dismiss();
 
-                                Intent intent = new Intent();
-                                intent.setAction(".ui.activity.AppDrawerActivity");
-                                startActivity(intent);
-                            }
-                        });
+                                    Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER);
+                                    startActivity(Intent.createChooser(intent, "Select Wallpaper"));
+                                }
+                            });
 
-                        TextView newPage = (TextView) dialogMenuView.findViewById(R.id.newPageTxt);
-                        newPage.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialogMenu.dismiss();
+                            TextView appsAndWidgets = (TextView) dialogMenuView.findViewById(R.id.appsAndWidgetsTxt);
+                            appsAndWidgets.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialogMenu.dismiss();                                    
+                                    Intent intent = new Intent();
+                                    intent.setAction(".ui.activity.AppDrawerActivity");
+                                    startActivity(intent);
+                                }
+                            });
 
-                                ConfigRetrievalAgent configRetrievalAgent = new ConfigRetrievalAgent();
+                            TextView newPage = (TextView) dialogMenuView.findViewById(R.id.newPageTxt);
+                            newPage.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialogMenu.dismiss();
 
-                                SecLaunchSubContainer newHomeScreenSubContatiner = new SecLaunchSubContainer() { };
-                                newHomeScreenSubContatiner.setSubContainerID(LauncherSettings.HOME_SCREEN_SC);
-                                configRetrievalAgent.getContainerByCurrentMode().addToSubContainers(newHomeScreenSubContatiner);
+                                    ConfigRetrievalAgent configRetrievalAgent = new ConfigRetrievalAgent();
 
-                                viewChangeCallback.onPageChange();
-                            }
-                        });
+                                    SecLaunchSubContainer newHomeScreenSubContatiner = new SecLaunchSubContainer() { };
+                                    newHomeScreenSubContatiner.setSubContainerID(LauncherSettings.HOME_SCREEN_SC);
+                                    configRetrievalAgent.getContainerByCurrentMode().addToSubContainers(newHomeScreenSubContatiner);
+									viewChangeCallback.onPageChange();
+                                }
+                            });
 
-                        TextView newFolder = (TextView) dialogMenuView.findViewById(R.id.newFolderTxt);
-                        newFolder.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dialogMenu.dismiss();
+                            TextView newFolder = (TextView) dialogMenuView.findViewById(R.id.newFolderTxt);
+                            newFolder.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialogMenu.dismiss();
 
                                 int spaceAvailable = 1, k = 0;
 
@@ -232,10 +236,11 @@ public class HomescreenViewPagerFragment extends Fragment
                             }
                         });
 
-                        dialogMenu.show();
-                        return true;
-                    }
-                });
+                            dialogMenu.show();
+                            return true;
+                        }
+                    });
+                }
 
                 for (i = 0; i < subContainerItems.size() && gridItemPosition < totalGriditems - 1; i++)
                 {
@@ -257,28 +262,41 @@ public class HomescreenViewPagerFragment extends Fragment
                             ImageView icon = (ImageView) myView.findViewById(R.id.icon);
                             icon.setImageDrawable(item.getIcon(getActivity()));
 
-                            icon.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(item.getIntent());
-                                    startActivity(intent);
-                                }
-                            });
+                            if (clickable) {
+
+                                icon.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent = new Intent(item.getIntent());
+                                        startActivity(intent);
+                                    }
+                                });
+
+                            }
 
                             TextView appname = (TextView) myView.findViewById(R.id.appname);
                             appname.setText(item.getAppName());
 
                             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                            params.width = itemWidth;
-                            params.height = itemHeight;
+                            if (!clickable) {
+                                params.width = itemWidth / columnCount;
+                                params.height = itemHeight / rowCount;
+                            }
+                            else {
+                                params.width = itemWidth;
+                                params.height = itemHeight;
+                            }
                             params.setGravity(Gravity.CENTER);
                             myView.setLayoutParams(params);
                             gl.addView(myView);
+                            if (!clickable) {
+                                myView.animate().scaleX(0.75f).scaleY(0.75f).start();
+                            }
                         }
 
                         else if (subContainerItems.get(i).getItemType() == LauncherSettings.ITEM_TYPE_FOLDER)
                         {
-                            LayoutInflater factory = LayoutInflater.from(getActivity());
+                                                       LayoutInflater factory = LayoutInflater.from(getActivity());
                             View myView;
 
                             final FolderInfo item = (FolderInfo) subContainerItems.get(i);
@@ -297,8 +315,8 @@ public class HomescreenViewPagerFragment extends Fragment
                             if(noofitems == 0) {
                                 icon.setImageDrawable(getResources().getDrawable(R.drawable.foldericon));
                                 icon.setBackgroundResource(R.drawable.folder_background);
-                            }
-                            else
+                            }                            
+							else
                             {
                                 int drawableSize, j = 0, k;
 
@@ -312,8 +330,8 @@ public class HomescreenViewPagerFragment extends Fragment
                                     layers[j] = appsInFolder.get(k - 1).getIcon(getActivity());
 
                                 float iconWidthPX = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics());
-                                final LayerDrawable layerDrawable = new LayerDrawable(layers);
 
+                                final LayerDrawable layerDrawable = new LayerDrawable(layers);
                                 if (drawableSize == 4) {
                                     layerDrawable.setLayerInset(3, (int)iconWidthPX/16, (int)iconWidthPX/16, (int)(17 * iconWidthPX/16), (int)(17 * iconWidthPX/16));
                                     layerDrawable.setLayerInset(2, (int)(17 * iconWidthPX/16), (int)iconWidthPX/16, (int)iconWidthPX/16, (int)(17 * iconWidthPX/16));
@@ -345,11 +363,11 @@ public class HomescreenViewPagerFragment extends Fragment
                             params.setGravity(Gravity.CENTER);
                             myView.setLayoutParams(params);
 
-                            icon.setOnClickListener(new View.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(View v)
-                                {
+                            if (clickable) {
+
+                                icon.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
                                     final View dialogView1 = getActivity().getLayoutInflater().inflate(R.layout.open_folder_dialog, null);
                                     final Dialog dialog = new Dialog(getActivity(), R.style.FullHeightDialog);
                                     dialog.getWindow().getAttributes().windowAnimations = R.style.FolderOpenAnimation;
@@ -376,22 +394,19 @@ public class HomescreenViewPagerFragment extends Fragment
 
                                         }
                                     });
+                                        int dialogRowCount = 0, gheight;
+                                        if (noofitems > 0)
+                                            dialogRowCount = (int) Math.ceil(noofitems / 4.0);
+                                        if (dialogRowCount < 2)
+                                            gheight = itemHeight * dialogRowCount;
+                                        else
+                                            gheight = itemHeight * 2;
 
+                                        gheight = gheight + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 67, getResources().getDisplayMetrics());
 
-
-                                    int dialogRowCount = 0, gheight;
-                                    if(noofitems > 0)
-                                        dialogRowCount = (int) Math.ceil(noofitems/ 4.0);
-                                    if (dialogRowCount < 2)
-                                        gheight = itemHeight * dialogRowCount;
-                                    else
-                                        gheight = itemHeight * 2;
-
-                                    gheight = gheight + (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 67, getResources().getDisplayMetrics());
-
-                                    dialog.setContentView(dialogView1);
-                                    dialog.setCancelable(true);
-                                    dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, gheight);
+                                        dialog.setContentView(dialogView1);
+                                        dialog.setCancelable(true);
+                                        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, gheight);
 
                                     TextView folderName = (TextView) dialogView1.findViewById(R.id.folderName);
                                     folderName.setText(item.getFolderName());
@@ -405,39 +420,40 @@ public class HomescreenViewPagerFragment extends Fragment
                                         gridLayoutFolder.setColumnCount(4);
                                         gridLayoutFolder.setRowCount(dialogRowCount);
 
-                                        for (int i = 0; i < appsInFolder.size(); i++)
-                                        {
-                                            final ShortcutInfo folderItem = appsInFolder.get(i);
+                                            for (int i = 0; i < appsInFolder.size(); i++) {
+                                                final ShortcutInfo folderItem = appsInFolder.get(i);
 
-                                            LayoutInflater factory = LayoutInflater.from(getActivity());
-                                            View folderItemView = factory.inflate(R.layout.homescreen_item, null);
+                                                LayoutInflater factory = LayoutInflater.from(getActivity());
+                                                View folderItemView = factory.inflate(R.layout.homescreen_item, null);
 
-                                            ImageView icon = (ImageView) folderItemView.findViewById(R.id.icon);
-                                            icon.setImageDrawable(folderItem.getIcon(getActivity()));
+                                                ImageView icon = (ImageView) folderItemView.findViewById(R.id.icon);
+                                                icon.setImageDrawable(folderItem.getIcon(getActivity()));
 
-                                            icon.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    dialog.dismiss();
-                                                    Intent intent = new Intent(folderItem.getIntent());
-                                                    startActivity(intent);
-                                                }
-                                            });
+                                                icon.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        dialog.dismiss();
+                                                        Intent intent = new Intent(folderItem.getIntent());
+                                                        startActivity(intent);
+                                                    }
+                                                });
 
-                                            TextView appname = (TextView) folderItemView.findViewById(R.id.appname);
-                                            appname.setText(folderItem.getAppName());
+                                                TextView appname = (TextView) folderItemView.findViewById(R.id.appname);
+                                                appname.setText(folderItem.getAppName());
 
-                                            GridLayout.LayoutParams folderItemParams = new GridLayout.LayoutParams();
-                                            folderItemParams.width = itemWidth - 20;
-                                            folderItemParams.height = itemHeight;
-                                            folderItemView.setLayoutParams(folderItemParams);
-                                            gridLayoutFolder.addView(folderItemView);
+                                                GridLayout.LayoutParams folderItemParams = new GridLayout.LayoutParams();
+                                                folderItemParams.width = itemWidth - 20;
+                                                folderItemParams.height = itemHeight;
+                                                folderItemView.setLayoutParams(folderItemParams);
+                                                gridLayoutFolder.addView(folderItemView);
+                                            }
                                         }
-                                    }
 
-                                    dialog.show();
-                                }
-                            });
+                                        dialog.show();
+                                    }
+                                });
+
+                            }
 
                             gl.addView(myView);
                         }
@@ -460,8 +476,7 @@ public class HomescreenViewPagerFragment extends Fragment
                         gl.addView(spacer);
                     }
                 }
-
-                if( i < totalGriditems)
+				if( i < totalGriditems)
                 {
                     for (; i < totalGriditems; i++)
                     {
@@ -475,12 +490,71 @@ public class HomescreenViewPagerFragment extends Fragment
                         gl.addView(spacer);
                     }
                 }
+                if (clickable) {
+
+                    gl.setOnTouchListener(new View.OnTouchListener() {
+
+                        int IDLE = 0;
+                        int TOUCH = 1;
+                        int PINCH = 2;
+                        int touchState = IDLE;
+
+                        float distStart = 0;
+                        float distCurrent = 0;
+
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            float distx = 0;
+                            float disty = 0;
+
+                            int action = motionEvent.getAction();
+                            switch (action & MotionEvent.ACTION_MASK) {
+                                case MotionEvent.ACTION_DOWN:
+                                    Log.d("onTouch", "ACTION_DOWN");
+                                    touchState = TOUCH;
+                                    break;
+                                case MotionEvent.ACTION_POINTER_DOWN:
+                                    Log.d("onTouch", "ACTION_POINTER_DOWN");
+                                    touchState = PINCH;
+                                    distx = motionEvent.getX(0) - motionEvent.getX(1);
+                                    disty = motionEvent.getY(0) - motionEvent.getY(1);
+                                    distStart = FloatMath.sqrt(distx * distx + disty * disty);
+                                    break;
+                                case MotionEvent.ACTION_MOVE:
+                                    Log.d("onTouch", "ACTION_MOVE");
+                                    if (touchState == PINCH) {
+                                        Log.d("onTouch", "PINCH");
+                                        distx = motionEvent.getX(0) - motionEvent.getX(1);
+                                        disty = motionEvent.getY(0) - motionEvent.getY(1);
+                                        distCurrent = FloatMath.sqrt(distx * distx + disty * disty);
+                                        Log.d("distStart", Float.toString(distStart));
+                                        Log.d("distCurrent", Float.toString(distCurrent));
+                                        final float diff = distCurrent - distStart;
+                                        if (diff < -20) {
+                                            getContainerManager().onZoomOut();
+                                            touchState = IDLE;
+                                        }
+                                        return true;
+                                    }
+                                    break;
+                                case MotionEvent.ACTION_UP:
+                                    Log.d("onTouch", "ACTION_UP");
+                                    touchState = IDLE;
+                                    break;
+                                case MotionEvent.ACTION_POINTER_UP:
+                                    Log.d("onTouch", "ACTION_POINTER_UP");
+                                    touchState = TOUCH;
+                                    break;
+                            }
+                            return false;
+                        }
+
+                    });
+                }
             }
 
         return rootView;
     }
-
-
     private View getColorChoserView(LayoutInflater inflater, final FolderInfo item, int folderBackgroundColor, final GridLayout gridLayoutFolder)
     {
         View colorChoserView = inflater.inflate(R.layout.folder_color_choser, null);

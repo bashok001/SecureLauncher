@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.app.Activity;
 import android.content.ClipData;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -130,7 +132,7 @@ public class ContainerManagementViewPagerFragment extends Fragment {
 
     }
 
-    private final class ContainerDragShadowBuilder extends View.DragShadowBuilder {
+    public class ContainerDragShadowBuilder extends View.DragShadowBuilder {
 
         ContainerDragShadowBuilder(View view) {
             super(view);

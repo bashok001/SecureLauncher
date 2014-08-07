@@ -18,6 +18,7 @@ import com.syr.csrg.seclauncher.engine.ContainerManager;
 import com.syr.csrg.seclauncher.packDefinitions.LauncherSettings;
 import com.syr.csrg.seclauncher.ui.activity.ContainerManagementActivity;
 import com.syr.csrg.seclauncher.ui.adapter.ContainerManagementViewPagerAdapter;
+import com.syr.csrg.seclauncher.ui.indicator.CirclePageIndicator;
 
 
 /**
@@ -126,6 +127,9 @@ public class ContainerManagementFragment extends Fragment {
         });
 
         viewPager.setCurrentItem(position / LauncherSettings.CONTAINERS_PER_PAGE, false);
+
+        final CirclePageIndicator indicator = (CirclePageIndicator) rootView.findViewById(R.id.viewpagerindicator);
+        indicator.setViewPager(viewPager);
 
         cm.setTrashIcon(trashIcon);
         cm.setAddContainerButton(addButton);

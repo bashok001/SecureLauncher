@@ -1,14 +1,13 @@
 package com.syr.csrg.seclauncher.engine;
 
 import android.animation.Animator;
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -31,6 +30,7 @@ import com.syr.csrg.seclauncher.ui.adapter.ContainerManagementViewPagerAdapter;
 import com.syr.csrg.seclauncher.ui.adapter.HomescreenViewPagerAdapter;
 import com.syr.csrg.seclauncher.ui.adapter.SubContainerViewPagerAdapter;
 import com.syr.csrg.seclauncher.ui.fragment.ContainerManagementFragment;
+import com.syr.csrg.seclauncher.ui.fragment.ContainerManagementViewPagerFragment;
 import com.syr.csrg.seclauncher.ui.fragment.HomescreenFragment;
 import com.syr.csrg.seclauncher.ui.fragment.SubContainerFragment;
 
@@ -63,6 +63,9 @@ public class ContainerManager
     private View draggedView = null;
     private Drawable draggedViewBackground = null;
     private int dragStartPage = -1;
+
+    private int addButtonTopY = 0;
+    private int trashBottomY = 0;
 
     SecLaunchContainer container = null;
     ArrayList<SecLaunchSubContainer> subContainers = null;
@@ -185,6 +188,11 @@ public class ContainerManager
 
     public void setIsOverTrash(boolean isOverTrash) {
         this.overTrash = isOverTrash;
+        if (this.overTrash) {
+            if (overTrashListener != null) {
+                overTrashListener.isOverTrash();
+            }
+        }
     }
 
     public boolean isOverTrash() {
@@ -206,68 +214,6 @@ public class ContainerManager
         if (draggedView != null && draggedViewBackground != null) {
             draggedView.setBackground(draggedViewBackground);
         }
-    }
-
-    public View newSmallView(int sc, int w, int h) {
-        //FrameLayout frameLayout = new FrameLayout(activity);
-        //FrameLayout.LayoutParams flParams = new FrameLayout.LayoutParams(w, h);
-        GridLayout gl = new GridLayout(activity);
-        //gl.setLayoutParams(flParams);
-        GridLayout.LayoutParams glParams = new GridLayout.LayoutParams();
-        glParams.width = w / 4;
-        glParams.height = h / 4;
-        gl.setColumnCount(4);
-        gl.setRowCount(4);
-        gl.setOrientation(GridLayout.HORIZONTAL);
-        float pixImage = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 6, activity.getResources().getDisplayMetrics());
-        float pixTextWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, activity.getResources().getDisplayMetrics());
-        float pixTextHeight = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 7, activity.getResources().getDisplayMetrics());
-        float pixTextMarginTop = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, activity.getResources().getDisplayMetrics());
-        float pixTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 11, activity.getResources().getDisplayMetrics());
-
-
-
-        ArrayList<ItemInfo> items = subContainers.get(sc).getItems();
-        for (int i = 0; i < items.size(); i++) {
-            ShortcutInfo item = (ShortcutInfo) items.get(i);
-
-
-            LinearLayout linearLayout = new LinearLayout(activity);
-            linearLayout.setLayoutParams(glParams);
-            linearLayout.setGravity(Gravity.CENTER);
-
-            LinearLayout.LayoutParams llParamsImage = new LinearLayout.LayoutParams((int) pixImage, (int) pixImage);
-            llParamsImage.gravity = Gravity.CENTER;
-            LinearLayout.LayoutParams llParamsText = new LinearLayout.LayoutParams((int) pixTextWidth, (int) pixTextHeight);
-            llParamsText.gravity = Gravity.CENTER;
-            llParamsText.setMargins(0, (int) pixTextMarginTop, 0, 0);
-            linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-            ImageView icon = new ImageView(activity);
-            icon.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            icon.setLayoutParams(llParamsImage);
-
-            TextView text = new TextView(activity);
-            text.setGravity(Gravity.CENTER_HORIZONTAL);
-            text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            text.setTextColor(Color.WHITE);
-            text.setMaxLines(2);
-            text.setSingleLine(false);
-            text.setTextSize(pixTextSize);
-            text.setLayoutParams(llParamsText);
-
-
-            icon.setImageDrawable(item.getIcon(activity));
-            text.setText(item.getAppName());
-
-            linearLayout.addView(icon);
-            linearLayout.addView(text);
-
-            gl.addView(linearLayout);
-
-        }
-        //frameLayout.addView(gl);
-        return gl;
     }
 
     public boolean onBackPressed() {
@@ -398,6 +344,9 @@ public class ContainerManager
         if (page == lastPage && page != 0 && (getNumSubContainers()) % LauncherSettings.CONTAINERS_PER_PAGE == 0) {
             page = page - 1;
         }
+        if (getNumSubContainers() == 0) {
+            onAddSubContainer();
+        }
         setManagerPageSmooth(page);
         Log.d("delete new size", Integer.toString(getNumSubContainers()));
 
@@ -468,10 +417,10 @@ public class ContainerManager
                     .start();
         }
         if (addContainerButton != null && getNumSubContainers() < maxNumSubcontainers) {
-            AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(activity, R.anim.slide_out_add_button);
-            set.setTarget(addContainerButton);
-            set.start();
-            addContainerButton.animate().setDuration(500).rotationY(0).setListener(new Animator.AnimatorListener() {
+            addButtonTopY = addContainerButton.getTop();
+            DisplayMetrics dm = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+            addContainerButton.animate().setDuration(650).y(dm.heightPixels + 100).setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
                 }
@@ -493,10 +442,9 @@ public class ContainerManager
             });
         }
         if (trashIcon != null) {
-            AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(activity, R.anim.slide_in_trash);
-            set.setTarget(trashIcon);
-            set.start();
-            trashIcon.animate().setDuration(500).rotationY(0).setListener(new Animator.AnimatorListener() {
+            trashBottomY = trashIcon.getTop();
+            trashIcon.animate().setDuration(0).y(trashBottomY - 100).start();
+            trashIcon.animate().setDuration(650).y(0).setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
                     trashIcon.setVisibility(View.VISIBLE);
@@ -526,14 +474,11 @@ public class ContainerManager
             managerPager.animate()
                     .setDuration(250)
                     .scaleX(1.0f)
-                    .scaleY(1.05f)
+                    .scaleY(1.0f)
                     .start();
         }
         if (trashIcon != null) {
-            AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(activity, R.anim.slide_out_trash);
-            set.setTarget(trashIcon);
-            set.start();
-            trashIcon.animate().setDuration(500).rotationY(0).setListener(new Animator.AnimatorListener() {
+            trashIcon.animate().setDuration(650).y(trashBottomY - 100).setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
 
@@ -556,10 +501,7 @@ public class ContainerManager
             });
         }
         if (addContainerButton != null && getNumSubContainers() < maxNumSubcontainers) {
-            AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(activity, R.anim.slide_in_add_button);
-            set.setTarget(addContainerButton);
-            set.start();
-            addContainerButton.animate().setDuration(500).rotationY(0).setListener(new Animator.AnimatorListener() {
+            addContainerButton.animate().setDuration(650).y(addButtonTopY).setListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
                     addContainerButton.setVisibility(View.VISIBLE);
@@ -583,4 +525,13 @@ public class ContainerManager
         }
     }
 
+    public interface IsOverTrash {
+        public void isOverTrash();
+    }
+
+    IsOverTrash overTrashListener = null;
+
+    public void setIsOverTrashListener(ContainerManagementViewPagerFragment.ContainerDragShadowBuilder s) {
+        overTrashListener = (IsOverTrash) s;
+    }
 }

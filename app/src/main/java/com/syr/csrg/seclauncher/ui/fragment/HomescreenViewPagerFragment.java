@@ -48,6 +48,9 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
     public static final String HOMESCREEN_POSITION = "position";
     public static final String HOMESCREEN_CLICKABLE = "homescreen_clickable";
 
+    private static final float iconRatio = 48f / 78f;
+    private static final float appNameRatio = 30f / 78f;
+
     //DD
     ImageView mContainer, mTrashIcon, mInfoIcon;
     ArrayList<ViewGroup> gridList = new ArrayList<ViewGroup>();
@@ -276,6 +279,11 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                         ImageView icon = (ImageView) myView.findViewById(R.id.icon);
                         icon.setImageDrawable(item.getIcon(getActivity()));
 
+                        if (!clickable) {
+                            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(itemWidth / columnCount, itemHeight / rowCount);//(int) ((itemHeight / rowCount) * iconRatio));
+                            icon.setLayoutParams(p);
+                        }
+
                         if (clickable) {
 
                             icon.setOnClickListener(new View.OnClickListener() {
@@ -298,6 +306,12 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
 
                         TextView appname = (TextView) myView.findViewById(R.id.appname);
                         appname.setText(item.getAppName());
+
+                        if (!clickable) {
+                            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(itemWidth / columnCount, 0);//(int) ((itemHeight / rowCount) * appNameRatio));
+                            appname.setLayoutParams(p);
+                            appname.setTextSize(6);
+                        }
 
 //[]
                         if (clickable) {
@@ -353,6 +367,11 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
 
                         ImageView icon = (ImageView) myView.findViewById(R.id.icon);
 
+                        if (!clickable) {
+                            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(itemWidth / columnCount, itemHeight / rowCount);//(int) ((itemHeight / rowCount) * iconRatio));
+                            icon.setLayoutParams(p);
+                        }
+
                         gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_FOLDER;
                         gridItemViewHolder.itemInfo = item;
                         gridItemPosition++;
@@ -399,9 +418,21 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                         TextView appname = (TextView) myView.findViewById(R.id.appname);
                         appname.setText(item.getFolderName());
 
+                        if (!clickable) {
+                            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(itemWidth / columnCount, 0);//(int) ((itemHeight / rowCount) * appNameRatio));
+                            appname.setLayoutParams(p);
+                            appname.setTextSize(6);
+                        }
+
                         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                        params.width = itemWidth;
-                        params.height = itemHeight;
+                        if (clickable) {
+                            params.width = itemWidth;
+                            params.height = itemHeight;
+                        }
+                        else {
+                            params.width = itemWidth / columnCount;
+                            params.height = itemHeight / rowCount;
+                        }
                         params.setGravity(Gravity.CENTER);
                         myView.setLayoutParams(params);
 
@@ -540,11 +571,25 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                     View myView = factory.inflate(R.layout.homescreen_item, null);
                     ImageView icon = (ImageView) myView.findViewById(R.id.icon);
                     icon.setImageDrawable(null);
+                    if (!clickable) {
+                        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(itemWidth / columnCount, itemHeight / rowCount);//(int) ((itemHeight / rowCount) * iconRatio));
+                        icon.setLayoutParams(p);
+                    }
                     TextView appname = (TextView) myView.findViewById(R.id.appname);
+                    if (!clickable) {
+                        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(itemWidth / columnCount, 0);//(int) ((itemHeight / rowCount) * iconRatio));
+                        appname.setLayoutParams(p);
+                    }
                     appname.setText(null);
                     GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                    params.width = itemWidth;
-                    params.height = itemHeight;
+                    if (clickable) {
+                        params.width = itemWidth;
+                        params.height = itemHeight;
+                    }
+                    else {
+                        params.width = itemWidth / columnCount;
+                        params.height = itemHeight / rowCount;
+                    }
                     params.setGravity(Gravity.CENTER);
                     myView.setLayoutParams(params);
                     gl.addView(myView);
@@ -587,8 +632,14 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                     TextView appname = (TextView) myView.findViewById(R.id.appname);
                     appname.setText(null);
                     GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                    params.width = itemWidth;
-                    params.height = itemHeight;
+                    if (clickable) {
+                        params.width = itemWidth;
+                        params.height = itemHeight;
+                    }
+                    else {
+                        params.width = itemWidth / columnCount;
+                        params.height = itemHeight / rowCount;
+                    }
                     params.setGravity(Gravity.CENTER);
                     myView.setLayoutParams(params);
                     gl.addView(myView);

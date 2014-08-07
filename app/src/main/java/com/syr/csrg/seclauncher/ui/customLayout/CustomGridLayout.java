@@ -90,34 +90,7 @@ public class CustomGridLayout extends GridLayout {
 
     private void build(View child, int index) {
 
-        Log.d("children count before", Integer.toString(getChildCount()));
-
-        int row = numRows - 1;
-        for (int itemIndex = children.size() - 1; itemIndex >= 0; itemIndex--) {
-            LayoutInfo item = children.get(itemIndex);
-
-            if (lastItemInRow(itemIndex, numItemsPerRow, numRows)) {
-                if (numItemsPerRow[row] != largestMaxNumItemsPerRow) {
-                    Log.d("build: removeViewAt", Integer.toString(item.gridSpanIndex + 1));
-                    super.removeViewAt(item.gridSpanIndex + 1);
-                }
-            }
-
-            item.view = super.getChildAt(item.gridSpanIndex);
-            Log.d("build: removeViewAt", Integer.toString(item.gridSpanIndex));
-            super.removeViewAt(item.gridSpanIndex);
-
-            if (firstItemInRow(itemIndex, numItemsPerRow, numRows)) {
-                if (numItemsPerRow[row] != largestMaxNumItemsPerRow) {
-                    Log.d("build: removeViewAt", Integer.toString(item.gridSpanIndex - 1));
-                    super.removeViewAt(item.gridSpanIndex - 1);
-                }
-                row--;
-            }
-            else {
-                super.removeViewAt(item.gridSpanIndex - 1);
-            }
-        }
+        super.removeAllViews();
 
         LayoutInfo newItem = new LayoutInfo();
         newItem.view = child;
@@ -137,7 +110,7 @@ public class CustomGridLayout extends GridLayout {
         Log.d("row 1", Integer.toString(rowCounts[1]));
         Log.d("row 2", Integer.toString(rowCounts[2]));
 
-        row = 0;
+        int row = 0;
         Log.d("row", Integer.toString(row));
         int gridSpanIndex = 0;
         int gridIndex = 0;

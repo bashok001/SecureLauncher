@@ -7,15 +7,13 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.View;
-import android.view.animation.Animation;
-import android.widget.Adapter;
-import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -270,6 +268,22 @@ public class ContainerManager
         }
         //frameLayout.addView(gl);
         return gl;
+    }
+
+    public boolean onBackPressed() {
+        if (activity != null) {
+            FragmentManager fm = activity.getSupportFragmentManager();
+            Fragment fragment = fm.findFragmentById(fragmentId);
+            if (fragment instanceof ContainerManagementFragment) {
+                if (fragmentType == HOMESCREEN) {
+                    fm.beginTransaction()
+                            .replace(fragmentId, HomescreenFragment.newInstance(getSubContainerPage()))
+                            .commit();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public void onSubContainersUpdated() {

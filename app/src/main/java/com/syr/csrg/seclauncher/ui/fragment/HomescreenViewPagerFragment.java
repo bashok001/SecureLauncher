@@ -79,18 +79,18 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
         final int position = getArguments().getInt(HOMESCREEN_POSITION);
         final boolean clickable = getArguments().getBoolean(HOMESCREEN_CLICKABLE);
 
-        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
-        viewPager.setOnDragListener(new MyPagerDragListener());
+//[]
+//        ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+//        viewPager.setOnDragListener(new MyPagerDragListener());
 
         ArrayList<SecLaunchSubContainer> subContainers = getContainerManager().getSubContainers();
 
-        Log.d("size?", Integer.toString(getContainerManager().getNumSubContainers()));
-
-        //DD
+//[]
+//        //DD
         mTrashIcon = (ImageView) getActivity().findViewById(R.id.trash);
         mContainer = (ImageView) getActivity().findViewById(R.id.container);
         mInfoIcon = (ImageView) getActivity().findViewById(R.id.information);
-        //DD
+//        //DD
 
         if (subContainers.size() > 0) {
             final ArrayList<ItemInfo> subContainerItems = subContainers.get(Math.min(position, getContainerManager().getNumSubContainers() - 1)).getItems();
@@ -258,10 +258,14 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                         LayoutInflater factory = LayoutInflater.from(getActivity());
                         View myView = factory.inflate(R.layout.homescreen_item, null);
 
-                        //DD
-                        myView.setOnLongClickListener(new MyOnLongClickListener());
-                        myView.setOnDragListener(new MyDragListener());
-                        //DD
+//[]
+                        if (clickable) {
+                            //DD
+                            myView.setOnLongClickListener(new MyOnLongClickListener());
+                            myView.setOnDragListener(new MyDragListener());
+                            //DD
+                        }
+//
 
                         gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_SHORTCUT;
                         gridItemViewHolder.itemInfo = item;
@@ -284,16 +288,24 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
 
                         }
 
-                        //DD
-                        icon.setOnLongClickListener(new MyOnLongClickListener());
-                        //DD
+//[]
+                        if (clickable) {
+                            //DD
+                            icon.setOnLongClickListener(new MyOnLongClickListener());
+                            //DD
+                        }
+//
 
                         TextView appname = (TextView) myView.findViewById(R.id.appname);
                         appname.setText(item.getAppName());
 
-                        //DD
-                        appname.setOnLongClickListener(new MyOnLongClickListener());
-                        //DD
+//[]
+                        if (clickable) {
+                            //DD
+                            appname.setOnLongClickListener(new MyOnLongClickListener());
+                            //DD
+                        }
+//
 
                         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                         if (!clickable) {
@@ -331,9 +343,13 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                         final int noofitems = appsInFolder.size();
                         myView = factory.inflate(R.layout.homescreen_item, null);
 
-                        //DD
-                        myView.setOnDragListener(new MyDragListener());
-                        //DD
+//[]
+                        if (clickable) {
+                            //DD
+                            myView.setOnDragListener(new MyDragListener());
+                            //DD
+                        }
+//
 
                         ImageView icon = (ImageView) myView.findViewById(R.id.icon);
 
@@ -489,7 +505,11 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                         ViewGroup viewGroup = (ViewGroup) myView;
                         gridList.add(viewGroup);
                         //gridMap.put(viewGroup, icon);
-                        icon.setOnLongClickListener(new MyOnLongClickListener());
+//[]
+                        if (clickable) {
+                            icon.setOnLongClickListener(new MyOnLongClickListener());
+                        }
+//
 
                         //My code
                         myView.setTag("folder");
@@ -537,10 +557,14 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                         HomescreenFragment.gridMap_text.put(viewGroup, appname);
                         HomescreenFragment.gridMap_shortcutInfo.put(viewGroup, new ItemInfo());
                     }
-                    myView.setOnDragListener(new MyDragListener());
-                    icon.setOnLongClickListener(new MyOnLongClickListener());
-                    icon.setOnLongClickListener(new MyOnLongClickListener());
-                    //DD
+//[]
+                    if (clickable) {
+                        myView.setOnDragListener(new MyDragListener());
+                        icon.setOnLongClickListener(new MyOnLongClickListener());
+                        icon.setOnLongClickListener(new MyOnLongClickListener());
+                        //DD
+                    }
+//
                 }
             }
             if (i < totalGriditems) {
@@ -576,8 +600,12 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                         HomescreenFragment.gridMap_text.put(viewGroup, appname);
                         HomescreenFragment.gridMap_shortcutInfo.put(viewGroup, new ItemInfo());
                     }
-                    myView.setOnDragListener(new MyDragListener());
-                    icon.setOnLongClickListener(new MyOnLongClickListener());
+//[]
+                    if (clickable) {
+                        myView.setOnDragListener(new MyDragListener());
+                        icon.setOnLongClickListener(new MyOnLongClickListener());
+                    }
+//
                     i++;
                     //DD
                 }

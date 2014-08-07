@@ -103,8 +103,8 @@ public class ContainerManagementViewPagerFragment extends Fragment {
                     cm.onZoomIn(viewHolder.subContainerIndex);
                 }
             });
-            fragmentHolder.setOnLongClickListener(new MyOnLongClickListener());
-            fragmentHolder.setOnDragListener(new MyOnDragListener());
+            fragmentHolder.setOnLongClickListener(new ContainerOnLongClickListener());
+            fragmentHolder.setOnDragListener(new ContainerOnDragListener());
             //gl.addView(fragmentHolder);
             gl.addView(fragmentHolder, i);
 
@@ -119,20 +119,20 @@ public class ContainerManagementViewPagerFragment extends Fragment {
         return rootView;
     }
 
-    private final class MyOnLongClickListener implements View.OnLongClickListener {
+    private final class ContainerOnLongClickListener implements View.OnLongClickListener {
 
         public boolean onLongClick(View view) {
             ClipData data = ClipData.newPlainText("", "");
-            View.DragShadowBuilder shadowBuilder = new MyDragShadowBuilder(view);
+            View.DragShadowBuilder shadowBuilder = new ContainerDragShadowBuilder(view);
             view.startDrag(data, shadowBuilder, view, 0);
             return true;
         }
 
     }
 
-    private final class MyDragShadowBuilder extends View.DragShadowBuilder {
+    private final class ContainerDragShadowBuilder extends View.DragShadowBuilder {
 
-        MyDragShadowBuilder(View view) {
+        ContainerDragShadowBuilder(View view) {
             super(view);
         }
 
@@ -142,7 +142,7 @@ public class ContainerManagementViewPagerFragment extends Fragment {
         }
     }
 
-    private final class MyOnDragListener implements View.OnDragListener {
+    private final class ContainerOnDragListener implements View.OnDragListener {
         @Override
         public boolean onDrag(final View targetView, DragEvent event) {
 

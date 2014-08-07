@@ -8,14 +8,12 @@ import com.syr.csrg.seclauncher.agent.ConfigRetrievalAgent;
 import com.syr.csrg.seclauncher.engine.ContainerManager;
 import com.syr.csrg.seclauncher.packDefinitions.LauncherSettings;
 import com.syr.csrg.seclauncher.packDefinitions.SecLaunchSubContainer;
-
 import com.syr.csrg.seclauncher.testLoader.Loader;
 import com.syr.csrg.seclauncher.ui.fragment.HomescreenFragment;
 
-
 import java.util.ArrayList;
 
-public class HomescreenActivity extends ContainerManagementActivity  {
+public class HomescreenActivity extends ContainerManagementActivity {
 
     private static ArrayList<SecLaunchSubContainer> homescreenSubContainers = null;
     public HomescreenFragment homescreenFragment = null;
@@ -50,8 +48,13 @@ public class HomescreenActivity extends ContainerManagementActivity  {
         cm.setSubContainers(getHomescreenSubContainers());
         cm.setFragmentId(R.id.homescreen_activity);
         cm.setFragmentType(ContainerManager.HOMESCREEN);
+    }
 
-
+    @Override
+    public void onBackPressed() {
+        if (!getContainerManager().onBackPressed()) {
+            super.onBackPressed();
+        }
     }
 }
 

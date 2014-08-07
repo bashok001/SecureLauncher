@@ -82,7 +82,7 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
         customizeViewPager(rootView);
         final ViewPager pager = (ViewPager) rootView.findViewById(R.id.viewpager);
 //[]
-        pager.setOnDragListener(new MyDragListener());
+        pager.setOnDragListener(new MyPagerDragListener());
 //
         pager.setAdapter(pageAdapter);
 

@@ -910,7 +910,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
 
     }
 
-    private final class Listener implements View.OnDragListener {
+    private final class MyPagerDragListener implements View.OnDragListener {
         @Override
         public boolean onDrag(View view, DragEvent event) {
 

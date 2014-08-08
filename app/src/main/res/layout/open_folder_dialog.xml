@@ -15,7 +15,7 @@
         android:background="@android:color/holo_blue_dark"
         android:orientation="horizontal">
 
-        <TextView
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:padding="10dp"
@@ -25,6 +25,11 @@
             android:gravity="left"
             android:layout_weight="1"
             android:id="@+id/folderName"
+            android:background="@drawable/foldername_noneditableshape"
+            android:textCursorDrawable="@drawable/foldername_edittextcursor"
+            android:enabled="false"
+            android:clickable="true"
+            android:cursorVisible="true"
             android:text ="Folder Name"/>
 
         <ImageView
@@ -32,16 +37,14 @@
             android:layout_height="40dp"
             android:layout_gravity="right"
             android:gravity="right"
-            android:visibility="invisible"
             android:id="@+id/folderSettings"
             android:background="@drawable/folder_settings"/>
-
 
     </LinearLayout>
 
     <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" >
 
         <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"

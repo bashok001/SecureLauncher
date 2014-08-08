@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -29,7 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.content.DialogInterface;
 import com.syr.csrg.seclauncher.R;
 import com.syr.csrg.seclauncher.agent.ConfigRetrievalAgent;
 import com.syr.csrg.seclauncher.packDefinitions.FolderInfo;
@@ -55,6 +56,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
     ImageView mContainer, mTrashIcon, mInfoIcon;
     ArrayList<ViewGroup> gridList = new ArrayList<ViewGroup>();
     Dialog dialog;
+    boolean viewChanged = false;
     //DD
 
     public static final HomescreenViewPagerFragment newInstance(int position, boolean clickable) {
@@ -162,8 +164,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
 
                                 ConfigRetrievalAgent configRetrievalAgent = new ConfigRetrievalAgent();
 
-                                SecLaunchSubContainer newHomeScreenSubContatiner = new SecLaunchSubContainer() {
-                                };
+                                SecLaunchSubContainer newHomeScreenSubContatiner = new SecLaunchSubContainer() { };
                                 newHomeScreenSubContatiner.setSubContainerID(LauncherSettings.HOME_SCREEN_SC);
                                 configRetrievalAgent.getContainerByCurrentMode().addToSubContainers(newHomeScreenSubContatiner);
                                 viewChangeCallback.onPageChange();
@@ -212,7 +213,10 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                                             in.setId(01);
                                             in.setContainer(01);
                                             in.setItemType(LauncherSettings.ITEM_TYPE_FOLDER);
-                                            in.setFolderName(newFolderName.getText().toString());
+                                            if(newFolderName.getText().toString().isEmpty())
+                                                in.setFolderName("New Folder");
+                                            else
+                                                in.setFolderName(newFolderName.getText().toString());
                                             in.setFolderBackgroundColor(Color.parseColor("#669933"));
                                             int j = 0;
 
@@ -378,10 +382,9 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                         gridItemViewHolder.itemPosition = gridItemPosition;
                         myView.setTag(gridItemViewHolder);
 
-                        if (noofitems == 0) {
+                        if (noofitems == 0)
                             icon.setImageDrawable(getResources().getDrawable(R.drawable.foldericon));
-                            icon.setBackgroundResource(R.drawable.folder_background);
-                        } else {
+                        else {
                             int drawableSize, j = 0, k;
 
                             if (noofitems > 4)
@@ -412,8 +415,10 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                                 layerDrawable.setLayerInset(0, (int) iconWidthPX / 16, (int) iconWidthPX / 16, (int) (17 * iconWidthPX / 16), (int) (17 * iconWidthPX / 16));
 
                             icon.setImageDrawable(layerDrawable);
-                            icon.setBackgroundResource(R.drawable.folder_background);
                         }
+                        icon.setBackgroundResource(R.drawable.folder_background);
+                        final GradientDrawable drawable = (GradientDrawable) icon.getBackground();
+                        drawable.setColor(item.getFolderBackgroundColor());
 
                         TextView appname = (TextView) myView.findViewById(R.id.appname);
                         appname.setText(item.getFolderName());
@@ -446,21 +451,30 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                                     dialog.getWindow().getAttributes().windowAnimations = R.style.FolderOpenAnimation;
                                     final GridLayout gridLayoutFolder = (GridLayout) dialogView1.findViewById(R.id.folderGridContainer);
                                     final ImageView folderSettings = (ImageView) dialogView1.findViewById(R.id.folderSettings);
+                                    final TextView emptyFolderText = new TextView(getActivity());
 
                                     final int folderBackgroundColor = item.getFolderBackgroundColor();
                                     gridLayoutFolder.setBackgroundColor(folderBackgroundColor);
-                                    final LinearLayout.LayoutParams colorLayoutInVisibleParams = new LinearLayout.LayoutParams(0, 0);
-                                    final LinearLayout.LayoutParams colorLayoutVisibleParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+                                    final EditText folderName = (EditText) dialogView1.findViewById(R.id.folderName);
+                                    folderName.setText(item.getFolderName());
 
                                     folderSettings.setOnClickListener(new View.OnClickListener() {
                                         public void onClick(View v) {
                                             if (dialogView1.findViewById(R.id.colorSetting) == null) {
-                                                View v1 = getColorChoserView(inflater, item, folderBackgroundColor, gridLayoutFolder);
+                                                View v1 = getColorChoserView(inflater, item, folderBackgroundColor, gridLayoutFolder, emptyFolderText);
                                                 LinearLayout folderDialog = (LinearLayout) dialogView1.findViewById(R.id.folderDialog);
                                                 folderDialog.addView(v1, 1);
+                                                folderName.setFocusable(true);
+                                                folderName.setEnabled(true);
+                                                folderName.requestFocus();
+                                                folderName.setBackgroundResource(R.drawable.foldername_editableshape);
+                                                viewChanged = true;
                                             } else {
                                                 LinearLayout folderDialog = (LinearLayout) dialogView1.findViewById(R.id.folderDialog);
                                                 folderDialog.removeViewAt(1);
+                                                folderName.setEnabled(false);
+                                                folderName.setBackgroundResource(R.drawable.foldername_noneditableshape);
                                             }
 
                                         }
@@ -473,14 +487,15 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                                     else
                                         gheight = itemHeight * 2;
 
-                                    gheight = gheight + (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 67, getResources().getDisplayMetrics());
+                                    if (noofitems > 0)
+                                        gheight = gheight + (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 67, getResources().getDisplayMetrics());
+                                    else
+                                        gheight = ViewGroup.LayoutParams.WRAP_CONTENT;
 
                                     dialog.setContentView(dialogView1);
                                     dialog.setCancelable(true);
                                     dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, gheight);
 
-                                    TextView folderName = (TextView) dialogView1.findViewById(R.id.folderName);
-                                    folderName.setText(item.getFolderName());
                                     LinearLayout folderHeading = (LinearLayout) dialogView1.findViewById(R.id.folderHeadingLayout);
                                     LinearLayout.LayoutParams folderHeadingParams = new LinearLayout.LayoutParams((itemWidth - 20) * 4, LinearLayout.LayoutParams.WRAP_CONTENT);
                                     folderHeading.setLayoutParams(folderHeadingParams);
@@ -524,6 +539,31 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                                             //DD
                                         }
                                     }
+                                    else
+                                    {
+                                        LinearLayout.LayoutParams folderTextParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                        emptyFolderText.setText("No Items");
+                                        emptyFolderText.setPadding(30, 20, 20, 30);
+                                        emptyFolderText.setTextColor(Color.WHITE);
+                                        emptyFolderText.setBackgroundColor(folderBackgroundColor);
+                                        emptyFolderText.setGravity(Gravity.LEFT);
+                                        emptyFolderText.setLayoutParams(folderTextParams);
+                                        LinearLayout folderDialog = (LinearLayout) dialogView1.findViewById(R.id.folderDialog);
+                                        folderDialog.addView(emptyFolderText, 1);
+                                    }
+
+                                    dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                        public void onDismiss(final DialogInterface dialog) {
+                                            if(viewChanged)
+                                            {
+                                                if(folderName.getText() != null)
+                                                    item.setFolderName(folderName.getText().toString());
+                                                viewChanged = false;
+                                                dialog.dismiss();
+                                                viewChangeCallback.onViewChange(position);
+                                            }
+                                        }
+                                    });
 
                                     dialog.show();
                                 }
@@ -732,7 +772,8 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
         return rootView;
     }
 
-    private View getColorChoserView(LayoutInflater inflater, final FolderInfo item, int folderBackgroundColor, final GridLayout gridLayoutFolder) {
+    private View getColorChoserView(LayoutInflater inflater, final FolderInfo item, int folderBackgroundColor, final GridLayout gridLayoutFolder, final TextView emptyFolderText)
+    {
         View colorChoserView = inflater.inflate(R.layout.folder_color_choser, null);
 
         final LinearLayout colorSetter = (LinearLayout) colorChoserView.findViewById(R.id.colorSetting);
@@ -751,31 +792,31 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
         RadioButton biscuitColorRB = (RadioButton) colorChoserView.findViewById(R.id.biscuitColorRB);
         RadioButton grayColorRB = (RadioButton) colorChoserView.findViewById(R.id.grayColorRB);
         RadioButton greenseaColorRB = (RadioButton) colorChoserView.findViewById(R.id.greenseaColorRB);
-        if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_dark_green))
+        if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_dark_green))
             greenColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_belize_hole))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_belize_hole))
             blueColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_orange))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_orange))
             orangeColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_amethyst))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_amethyst))
             amethystColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_pomegranate))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_pomegranate))
             pomegranateColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_asbestos))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_asbestos))
             asbestosColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_dark_blue))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_dark_blue))
             darkblueColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_maroon))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_maroon))
             maroonColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_pista_green))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_pista_green))
             pistagreenColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_purple))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_purple))
             purpleColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_biscuit))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_biscuit))
             biscuitColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_gray))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_gray))
             grayColorRB.setChecked(true);
-        else if (folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_green_sea))
+        else if(folderBackgroundColor == getResources().getColor(R.color.seclaunch_color_green_sea))
             greenseaColorRB.setChecked(true);
         else
             greenColorRB.setChecked(true);
@@ -786,7 +827,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         blueColorRB.setOnClickListener(new View.OnClickListener() {
@@ -795,7 +836,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         orangeColorRB.setOnClickListener(new View.OnClickListener() {
@@ -804,7 +845,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         amethystColorRB.setOnClickListener(new View.OnClickListener() {
@@ -813,7 +854,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         pomegranateColorRB.setOnClickListener(new View.OnClickListener() {
@@ -822,7 +863,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         asbestosColorRB.setOnClickListener(new View.OnClickListener() {
@@ -831,7 +872,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         darkblueColorRB.setOnClickListener(new View.OnClickListener() {
@@ -840,7 +881,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         maroonColorRB.setOnClickListener(new View.OnClickListener() {
@@ -849,7 +890,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         pistagreenColorRB.setOnClickListener(new View.OnClickListener() {
@@ -858,7 +899,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         purpleColorRB.setOnClickListener(new View.OnClickListener() {
@@ -867,7 +908,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         biscuitColorRB.setOnClickListener(new View.OnClickListener() {
@@ -876,7 +917,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         grayColorRB.setOnClickListener(new View.OnClickListener() {
@@ -885,7 +926,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
         greenseaColorRB.setOnClickListener(new View.OnClickListener() {
@@ -894,7 +935,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                 gridLayoutFolder.setBackgroundColor(color);
                 colorSetter.setBackgroundColor(color);
                 item.setFolderBackgroundColor(color);
-
+                emptyFolderText.setBackgroundColor(color);
             }
         });
 

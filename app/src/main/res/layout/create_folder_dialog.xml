@@ -24,7 +24,7 @@
         <EditText
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:hint="Unnamed folder"
+            android:hint="New folder"
             android:background="@drawable/edittext_recshape"
             android:padding="10dp"
             android:textSize="15sp"

@@ -592,6 +592,13 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                     }
                     params.setGravity(Gravity.CENTER);
                     myView.setLayoutParams(params);
+
+                    gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_SPACER;
+                    gridItemPosition++;
+                    gridItemViewHolder.itemPosition = gridItemPosition;
+                    myView.setTag(gridItemViewHolder);
+
+
                     gl.addView(myView);
                     //DD
                     ViewGroup viewGroup = (ViewGroup) myView;
@@ -612,8 +619,8 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
 //
                 }
             }
-            if (i < totalGriditems) {
-                for (; i < totalGriditems; i++) {
+            if (gridItemPosition < totalGriditems -1) {
+                for (; gridItemPosition < totalGriditems -1;) {
                         /*Space spacer = new Space(getActivity());
 
                         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
@@ -642,6 +649,12 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                     }
                     params.setGravity(Gravity.CENTER);
                     myView.setLayoutParams(params);
+                    GridItemViewHolder gridItemViewHolder = new GridItemViewHolder();
+                    gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_SPACER;
+                    gridItemPosition++;
+                    gridItemViewHolder.itemPosition = gridItemPosition;
+                    myView.setTag(gridItemViewHolder);
+
                     gl.addView(myView);
                     ViewGroup viewGroup = (ViewGroup) myView;
                     gridList.add(viewGroup);
@@ -657,7 +670,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
                         icon.setOnLongClickListener(new MyOnLongClickListener());
                     }
 //
-                    i++;
+//                    gridItemPosition++;
                     //DD
                 }
             }
@@ -1150,7 +1163,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
 
     onViewChangeListener viewChangeCallback;
 
-    class GridItemViewHolder {
+    public class GridItemViewHolder {
         int itemType;
         int itemPosition;
         ItemInfo itemInfo;

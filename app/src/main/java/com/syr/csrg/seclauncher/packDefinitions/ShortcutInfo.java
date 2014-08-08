@@ -139,7 +139,7 @@ public class ShortcutInfo extends ItemInfo {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         intent.setComponent(className);
         intent.setFlags(launchFlags);
-        itemType = LauncherSettings.ITEM_TYPE_APPLICATION;
+        itemType = LauncherSettings.ITEM_TYPE_SHORTCUT;
     }
 
     @Override

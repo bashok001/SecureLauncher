@@ -48,7 +48,7 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
     ImageView mTrashIcon, mContainer, mInfoIcon;
     //DD
     public static final String HOMESCREEN_POSITION = "position";
-
+    int gridItemPosition = -1;
     HomescreenViewPagerAdapter pageAdapter = null;
     PageIndicator mIndicator = null;
     View rootView;
@@ -347,9 +347,14 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                     params.height = GridLayout.LayoutParams.WRAP_CONTENT;
                     params.setGravity(Gravity.CENTER);
                     myView.setLayoutParams(params);
+
+                    GridItemViewHolder gridItemViewHolder = new GridItemViewHolder();
+                    gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_APPDRAWER_ICON;
+                    gridItemPosition++;
+                    gridItemViewHolder.itemPosition = gridItemPosition;
+                    myView.setTag(gridItemViewHolder);
+
                     gl.addView(myView);
-
-
                 } else {
                     if (subContainerItems.get(j) != null) {
                         if (subContainerItems.get(j).getItemType() == LauncherSettings.ITEM_TYPE_SHORTCUT) {
@@ -381,8 +386,13 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                             params.height = GridLayout.LayoutParams.WRAP_CONTENT;
                             params.setGravity(Gravity.CENTER);
                             myView.setLayoutParams(params);
+                            GridItemViewHolder gridItemViewHolder = new GridItemViewHolder();
+                            gridItemViewHolder.itemInfo = item;
+                            gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_SHORTCUT;
+                            gridItemPosition++;
+                            gridItemViewHolder.itemPosition = gridItemPosition;
+                            myView.setTag(gridItemViewHolder);
                             gl.addView(myView);
-
                             //DD
                             ViewGroup view = (ViewGroup) myView;
                             gridMap_icon.put(view, icon);
@@ -412,6 +422,13 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                         params.height = GridLayout.LayoutParams.WRAP_CONTENT;
                         params.setGravity(Gravity.CENTER);
                         myView.setLayoutParams(params);
+
+                        GridItemViewHolder gridItemViewHolder = new GridItemViewHolder();
+                        gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_SPACER;
+                        gridItemPosition++;
+                        gridItemViewHolder.itemPosition = gridItemPosition;
+                        myView.setTag(gridItemViewHolder);
+
                         gl.addView(myView);
                         ViewGroup viewGroup = (ViewGroup) myView;
                         Object lock3 = new Object();
@@ -459,6 +476,13 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                         params.height = GridLayout.LayoutParams.WRAP_CONTENT;
                         params.setGravity(Gravity.CENTER);
                         myView.setLayoutParams(params);
+
+                        GridItemViewHolder gridItemViewHolder = new GridItemViewHolder();
+                        gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_APPDRAWER_ICON;
+                        gridItemPosition++;
+                        gridItemViewHolder.itemPosition = gridItemPosition;
+                        myView.setTag(gridItemViewHolder);
+
                         gl.addView(myView);
                     } else {
                         //DD
@@ -481,6 +505,13 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                         params.height = GridLayout.LayoutParams.WRAP_CONTENT;
                         params.setGravity(Gravity.CENTER);
                         myView.setLayoutParams(params);
+
+                        GridItemViewHolder gridItemViewHolder = new GridItemViewHolder();
+                        gridItemViewHolder.itemType = LauncherSettings.ITEM_TYPE_SPACER;
+                        gridItemPosition++;
+                        gridItemViewHolder.itemPosition = gridItemPosition;
+                        myView.setTag(gridItemViewHolder);
+
                         gl.addView(myView);
                         ViewGroup viewGroup = (ViewGroup) myView;
                         Object lock3 = new Object();
@@ -720,5 +751,11 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
             }
             return true;
         }
+    }
+
+    public class GridItemViewHolder {
+        int itemType;
+        int itemPosition;
+        ItemInfo itemInfo;
     }
 }

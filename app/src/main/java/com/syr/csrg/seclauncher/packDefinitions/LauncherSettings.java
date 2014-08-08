@@ -25,7 +25,6 @@ public class LauncherSettings {
     public static final String PACKAGE_NAME = "packageName";
     public static final String INTENT = "intent";
     public static final String ITEM_TYPE = "itemType";
-    public static final int ITEM_TYPE_APPLICATION = 0;
     public static final int ITEM_TYPE_SHORTCUT = 1;
     public static final String ICON_TYPE = "iconType";
     public static final int ICON_TYPE_RESOURCE = 0;
@@ -38,6 +37,8 @@ public class LauncherSettings {
     public static final int ITEM_TYPE_FOLDER = 2;
     public static final int ITEM_TYPE_APPWIDGET = 4;
     public static final int ITEM_TYPE_SPACER = 5;
+
+    public static final int ITEM_TYPE_APPDRAWER_ICON = 6;
 
     public static final int NO_ACCESS_CONTROL_MODE = 0;
     public static final int PARENTAL_CONTROL_MODE = 1;

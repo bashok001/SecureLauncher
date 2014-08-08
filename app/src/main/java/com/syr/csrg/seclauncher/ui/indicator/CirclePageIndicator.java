@@ -29,6 +29,7 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewConfigurationCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -392,7 +393,11 @@ public class CirclePageIndicator extends View implements PageIndicator {
                 if (mIsDragging) {
                     mLastMotionX = x;
                     if (mViewPager.isFakeDragging() || mViewPager.beginFakeDrag()) {
-                        mViewPager.fakeDragBy(deltaX);
+                        try {
+                            mViewPager.fakeDragBy(deltaX);
+                        }
+                        catch (Exception e)
+                        { Log.d("CirlcePageIndicator", "fakeDragBy");}
                     }
                 }
 
@@ -422,7 +427,14 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
                 mIsDragging = false;
                 mActivePointerId = INVALID_POINTER;
-                if (mViewPager.isFakeDragging()) mViewPager.endFakeDrag();
+                try {
+
+                    if (mViewPager.isFakeDragging()) mViewPager.endFakeDrag();
+                }
+                catch(Exception e)
+                {
+                    Log.d("CirclePageIndicator", "fakeDragEnd");
+                }
                 break;
 
             case MotionEventCompat.ACTION_POINTER_DOWN: {

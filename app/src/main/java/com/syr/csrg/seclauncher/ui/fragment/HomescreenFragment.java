@@ -45,6 +45,7 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
     public static ConcurrentHashMap<ViewGroup, View> gridMap_icon = new ConcurrentHashMap<ViewGroup, View>();
     public static ConcurrentHashMap<ViewGroup, View> gridMap_text = new ConcurrentHashMap<ViewGroup, View>();
     public static ConcurrentHashMap<ViewGroup, ItemInfo> gridMap_shortcutInfo = new ConcurrentHashMap<ViewGroup, ItemInfo>();
+    // Initializing ImageViews to perform the delete, move to different container, navigate to App information.
     ImageView mTrashIcon, mContainer, mInfoIcon;
     //DD
     public static final String HOMESCREEN_POSITION = "position";
@@ -81,38 +82,50 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
 
         customizeViewPager(rootView);
         final ViewPager pager = (ViewPager) rootView.findViewById(R.id.viewpager);
-//[]
         pager.setOnDragListener(new MyPagerDragListener());
-//
         pager.setAdapter(pageAdapter);
-
         mIndicator = (CirclePageIndicator) rootView.findViewById(R.id.viewpagerindicator);
         mIndicator.setViewPager(pager);
-
         loadQuickAccessPanel(rootView);
+
+        /* Variables are assigned to corresponding Ids defined in XML
+        * Setting the visibility of imageview to invisible to make sure it is now shown by default
+        * While Long click on icons, we need to make the imageview visible*/
+
+        //Move to container
         mContainer = (ImageView) rootView.findViewById(R.id.container);
         mContainer.setVisibility(View.INVISIBLE);
-
+        //Information about App
         mInfoIcon = (ImageView) rootView.findViewById(R.id.information);
         mInfoIcon.setVisibility(View.INVISIBLE);
-
+        // Deleting the shortcut
         mTrashIcon = (ImageView) rootView.findViewById(R.id.trash);
         mTrashIcon.setVisibility(View.INVISIBLE);
 
-        mTrashIcon.setOnDragListener(new View.OnDragListener() {
+        // Defining the Drag Listener for every ImageView
+
+        /*Delete Icon Drag Listner
+        * ------------------------
+        * On Enter: Animation the imageview and updating the color of image icon, scaling up the delete icon
+        * On Exit: clearing the colors and animation to let the users, restoring the icon to original size
+        * On End: clearing the colors and animation to let the users, restoring the icon to original size
+        * On Drop: assigning the imageview and textview to null */
+
+         mTrashIcon.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
                 try {
 
                     View sourceView = (View) dragEvent.getLocalState();
-                    int startPage = pager.getCurrentItem();
                     switch (dragEvent.getAction()) {
                         case DragEvent.ACTION_DRAG_STARTED:
                             break;
                         case DragEvent.ACTION_DRAG_ENTERED:
                             if (view.getId() == R.id.trash) {
+                                Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_shake);
                                 ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
                                 imageView.setColorFilter(Color.RED);
+                                imageView.startAnimation(shake);
                                 view.animate().scaleX(1.2f);
                                 view.animate().scaleY(1.2f);
                             }
@@ -121,6 +134,7 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                             if (view != null && view.getId() == R.id.trash) {
                                 ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
                                 imageView.clearColorFilter();
+                                imageView.clearAnimation();
                                 view.animate().scaleX(1.0f);
                                 view.animate().scaleY(1.0f);
                                 view.invalidate();
@@ -149,6 +163,7 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                             if (view != null && view.getId() == R.id.trash) {
                                 ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
                                 imageView.clearColorFilter();
+                                imageView.clearAnimation();
                                 view.animate().scaleX(1.0f);
                                 view.animate().scaleY(1.0f);
                             }
@@ -162,12 +177,18 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
             }
         });
 
+        /*Move to Container Drag Listner
+        * ------------------------
+        * On Enter: scaling up the delete icon
+        * On Exit: restoring the icon to original size
+        * On End: restoring the icon to original size
+        * On Drop: assigning the imageview and textview to null */
+
         mContainer.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
                 View sourceView = (View) dragEvent.getLocalState();
                 ViewGroup owner = (ViewGroup) sourceView.getParent().getParent();
-                int startPage = pager.getCurrentItem();
                 switch (dragEvent.getAction()) {
                     case DragEvent.ACTION_DRAG_STARTED:
                         break;
@@ -181,7 +202,7 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                         if (view.getId() == R.id.container) {
                             view.animate().scaleX(1.0f);
                             view.animate().scaleY(1.0f);
-                            Toast.makeText(getActivity(), "Exit!", Toast.LENGTH_LONG).show();
+
                             view.invalidate();
                         }
                         break;
@@ -190,13 +211,8 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                         if (view.getId() == R.id.container) {
                             if (owner.getId() == R.id.gridContainer) {
                                 GridLayout gridLayout = (GridLayout) owner;
-                                int pos = gridLayout.indexOfChild(sourceView);
-                                //int c = pos + startPage * 5;
-                                Toast.makeText(getActivity(), "Deleted!", Toast.LENGTH_LONG).show();
-                                //SecLaunchContext.removeContainer(c);
-                                //onUpdateIcons();
+                                Toast.makeText(getActivity(), "Container!", Toast.LENGTH_LONG).show();
                             }
-                            //}
                         }
                         break;
                     case DragEvent.ACTION_DRAG_LOCATION:
@@ -213,23 +229,29 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
             }
         });
 
+        /*Information Icon Drag Listner
+        * ------------------------
+        * On Enter: Animation the imageview and updating the color of image icon, scaling up the delete icon
+        * On Exit: clearing the colors and animation to let the users, restoring the icon size
+        * On End: clearing the colors and animation to let the users, restoring the icon size
+        * On Drop: Getting the item information from the Shortcutinfo Class and get the package name
+        *          and Intent to open Settings.ACTION_APPLICATION_DETAILS_SETTINGS */
+
         mInfoIcon.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
                 View sourceView = (View) dragEvent.getLocalState();
-                //View sourceView1 = (View) sourceView.getParent();
-                //System.out.println("SourceView: " + sourceView);
                 ViewGroup owner = (ViewGroup) sourceView.getParent();
-                // ViewGroup owner = (ViewGroup) sourceView.getParent().getParent();
 
-                int startPage = pager.getCurrentItem();
                 switch (dragEvent.getAction()) {
                     case DragEvent.ACTION_DRAG_STARTED:
                         break;
                     case DragEvent.ACTION_DRAG_ENTERED:
                         if (view.getId() == R.id.information) {
+                            Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.anim_shake);
                             ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
                             imageView.setColorFilter(Color.BLUE);
+                            imageView.startAnimation(shake);
                             view.animate().scaleX(1.2f);
                             view.animate().scaleY(1.2f);
                         }
@@ -238,16 +260,15 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                         if (view.getId() == R.id.information) {
                             ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
                             imageView.clearColorFilter();
+                            imageView.clearAnimation();
                             view.animate().scaleX(1.0f);
                             view.animate().scaleY(1.0f);
                             view.invalidate();
                         }
                         break;
                     case DragEvent.ACTION_DROP:
-                        try {/**/
-
+                        try {
                             GridLayout gridLayout = (GridLayout) owner;
-                            int j = gridLayout.indexOfChild(sourceView);
                             ShortcutInfo item = (ShortcutInfo) gridMap_shortcutInfo.get(sourceView);
                             Intent i = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                             i.addCategory(Intent.CATEGORY_DEFAULT);
@@ -265,6 +286,7 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                         if (view.getId() == R.id.information) {
                             ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
                             imageView.clearColorFilter();
+                            imageView.clearAnimation();
                             view.animate().scaleX(1.0f);
                             view.animate().scaleY(1.0f);
                         }
@@ -274,7 +296,6 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                 return true;
             }
         });
-
 
         pager.setCurrentItem(position, false);
 

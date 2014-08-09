@@ -111,12 +111,16 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                             break;
                         case DragEvent.ACTION_DRAG_ENTERED:
                             if (view.getId() == R.id.trash) {
+                                ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
+                                imageView.setColorFilter(Color.RED);
                                 view.animate().scaleX(1.2f);
                                 view.animate().scaleY(1.2f);
                             }
                             break;
                         case DragEvent.ACTION_DRAG_EXITED:
                             if (view != null && view.getId() == R.id.trash) {
+                                ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
+                                imageView.clearColorFilter();
                                 view.animate().scaleX(1.0f);
                                 view.animate().scaleY(1.0f);
                                 view.invalidate();
@@ -143,6 +147,8 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                             break;
                         case DragEvent.ACTION_DRAG_ENDED:
                             if (view != null && view.getId() == R.id.trash) {
+                                ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
+                                imageView.clearColorFilter();
                                 view.animate().scaleX(1.0f);
                                 view.animate().scaleY(1.0f);
                             }
@@ -222,16 +228,18 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                         break;
                     case DragEvent.ACTION_DRAG_ENTERED:
                         if (view.getId() == R.id.information) {
+                            ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
+                            imageView.setColorFilter(Color.BLUE);
                             view.animate().scaleX(1.2f);
                             view.animate().scaleY(1.2f);
                         }
-
-                                                   break;
+                        break;
                     case DragEvent.ACTION_DRAG_EXITED:
                         if (view.getId() == R.id.information) {
+                            ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
+                            imageView.clearColorFilter();
                             view.animate().scaleX(1.0f);
                             view.animate().scaleY(1.0f);
-                            Toast.makeText(getActivity(), "Exit!", Toast.LENGTH_LONG).show();
                             view.invalidate();
                         }
                         break;
@@ -255,6 +263,8 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
                         break;
                     case DragEvent.ACTION_DRAG_ENDED:
                         if (view.getId() == R.id.information) {
+                            ImageView imageView = (ImageView) gridMap_icon.get(sourceView);
+                            imageView.clearColorFilter();
                             view.animate().scaleX(1.0f);
                             view.animate().scaleY(1.0f);
                         }

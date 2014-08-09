@@ -53,6 +53,7 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
     private static final float appNameRatio = 30f / 78f;
 
     //DD
+    // Initializing ImageViews to perform the delete, move to different container, navigate to App information.
     ImageView mContainer, mTrashIcon, mInfoIcon;
     ArrayList<ViewGroup> gridList = new ArrayList<ViewGroup>();
     Dialog dialog;
@@ -91,11 +92,12 @@ public class HomescreenViewPagerFragment extends SubContainerViewPagerFragment {
         ArrayList<SecLaunchSubContainer> subContainers = getContainerManager().getSubContainers();
 
 //[]
-//        //DD
+//      //DD
+        //Variables are assigned to corresponding Ids defined in XML
         mTrashIcon = (ImageView) getActivity().findViewById(R.id.trash);
         mContainer = (ImageView) getActivity().findViewById(R.id.container);
         mInfoIcon = (ImageView) getActivity().findViewById(R.id.information);
-//        //DD
+//      //DD
 
         if (subContainers.size() > 0) {
             final ArrayList<ItemInfo> subContainerItems = subContainers.get(Math.min(position, getContainerManager().getNumSubContainers() - 1)).getItems();

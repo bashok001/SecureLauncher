@@ -658,18 +658,14 @@ public class HomescreenFragment extends SubContainerFragment implements Homescre
             } catch (Exception e) {
                 Log.v("Tag", "MyPagerDragListener: onDrag: " + e);
             }
-
             return true;
         }
-
     }
 
     private final class MyDragListener implements View.OnDragListener {
         @Override
         public boolean onDrag(View v, DragEvent event) {
             int action = event.getAction();
-            float x;
-            float y;
 
             try {
                 switch (event.getAction()) {

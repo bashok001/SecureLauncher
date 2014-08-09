@@ -11,14 +11,14 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:orientation="horizontal"
-        android:layout_height="wrap_content">
+        android:layout_height="45dp">
 
         <!-- android:padding="10dip"-->
         <ImageView
             android:id="@+id/container"
             android:src="@drawable/container"
             android:layout_width="wrap_content"
-            android:paddingTop="3dp"
+            android:paddingTop="5dp"
             android:layout_height="35dp"
             android:layout_alignParentLeft="true"
             android:visibility="invisible"/>
@@ -28,10 +28,9 @@
             android:id="@+id/information"
             android:src="@drawable/infoicon"
             android:layout_width="wrap_content"
-            android:paddingTop="3dp"
+            android:paddingTop="5dp"
             android:layout_height="35dp"
             android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
             android:visibility="invisible"/>
 
         <!--android:padding="10dip"-->
@@ -39,7 +38,7 @@
             android:id="@+id/trash"
             android:src="@drawable/trash"
             android:layout_width="wrap_content"
-            android:paddingTop="3dp"
+            android:paddingTop="5dp"
             android:layout_height="35dp"
             android:layout_alignParentRight="true"
             android:visibility="invisible"/>
